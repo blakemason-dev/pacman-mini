@@ -3,6 +3,9 @@ import express from 'express';
 import cors from 'cors';
 import * as path from 'path';
 import * as dotenv from 'dotenv';
+import { Server } from 'colyseus';
+import { monitor } from '@colyseus/monitor';
+import PacmanMiniRoom from './src/rooms/PacmanMini';
 
 dotenv.config();
 
@@ -23,11 +26,12 @@ app.use('/', (req, res, next) => {
     next();
 });
 
-
+// route when host wants to try get an access key
 app.get('/getKey', (req, res, next) => {
     res.json({ accessKey: "password" });
 });
 
+// route when host wants to play the game in an iframe (or new browser tab)
 app.use('/play/:accessKey', (req, res, next) => {
     if (req.params.accessKey === 'password') {
         res.render('index', {
@@ -36,8 +40,20 @@ app.use('/play/:accessKey', (req, res, next) => {
     }
 });
 
+// create the server
 const server = http.createServer(app);
+const gameServer = new Server({
+    server
+});
 
-server.listen(port);
+// register room handlers
+gameServer.define('pacman-mini', PacmanMiniRoom);  
 
+// register colyseus  monitor 
+app.use('/colyseus', monitor());
+
+// start listening
+gameServer.listen(port);
+
+// output port used
 console.log(`Listening on port:${port}`);

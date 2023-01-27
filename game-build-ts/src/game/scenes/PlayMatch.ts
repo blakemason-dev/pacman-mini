@@ -22,6 +22,17 @@ export class PlayMatch extends Phaser.Scene {
 
     async create(serverGameConfig: any) {
         console.log('PlayMatch: create()');
+
+        this.add.text(
+            this.scale.width * 0.025,
+            this.scale.width * 0.025,
+            "Scene: PlayMatch",
+            {
+                fontFamily: 'arial',
+                fontSize: '20px',
+                color: '#ffffff'
+            }
+        ).setOrigin(0, 0);
     }
 
     update(t: number, dt: number) {
