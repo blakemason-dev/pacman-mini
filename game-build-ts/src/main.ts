@@ -1,10 +1,11 @@
 import Phaser from 'phaser';
 import { BootStrap } from './game/scenes/BootStrap';
 
-// Calc dimensions to fit our given window
+// dimensions used for game config
 let GAME_WIDTH = window.innerWidth;
 let GAME_HEIGHT = window.innerHeight;
 
+// create game config
 const config = {
     type: Phaser.CANVAS,
     width: GAME_WIDTH,
@@ -12,9 +13,10 @@ const config = {
     scene: [BootStrap]
 }
 
+// create the phaser game
 const game = new Phaser.Game(config);
 
-
+// used whenever the game window changes size
 const calcGameWindow = () => {
     GAME_WIDTH = window.innerWidth;
     GAME_HEIGHT = window.innerWidth * 1080 / 1960

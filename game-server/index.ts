@@ -14,7 +14,7 @@ app.set('views', __dirname + '/views');
 
 app.use(cors());
 app.use(express.json());
-app.use('/', express.static(path.join(__dirname, 'game-build')));
+app.use('/', express.static(path.join(__dirname, 'game-build-js')));
 
 app.use('/', (req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', "*");
@@ -30,7 +30,7 @@ app.get('/getKey', (req, res, next) => {
 
 app.use('/play/:accessKey', (req, res, next) => {
     if (req.params.accessKey === 'password') {
-        res.render('ejs-index', {
+        res.render('index', {
             accessKey: req.params.accessKey
         });
     }

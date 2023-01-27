@@ -1,5 +1,6 @@
 // Bootstrap.ts
-// Handles scene management and global assets
+// - Handles scene management and global assets
+// - Is live during entire duration of a game instance
 
 import Phaser from "phaser";
 

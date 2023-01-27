@@ -1,0 +1,8 @@
+.App {
+    /* border: solid red 1px; */
+
+    display: flex;
+    flex-flow: column nowrap;
+
+    align-items: center;
+}

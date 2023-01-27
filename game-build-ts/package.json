@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "rm -rf ../game-logic-server/game-build; tsc && vite build",
-    "postbuild": "mv dist ../game-logic-server/game-build; rm ../game-logic-server/views/ejs.index.ejs; cp ../game-logic-server/game-build/index.html ../game-logic-server/views/ejs-index.ejs; ",
+    "build": "rm -rf ../game-server/game-build-js; tsc && vite build",
+    "postbuild": "mv dist ../game-server/game-build-js; rm ../game-server/views/index.ejs; cp ../game-server/game-build-js/index.html ../game-server/views/index.ejs; ",
     "preview": "vite preview"
   },
   "devDependencies": {

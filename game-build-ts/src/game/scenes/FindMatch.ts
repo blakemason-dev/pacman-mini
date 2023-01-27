@@ -1,3 +1,7 @@
+// FindMatch.ts
+// - Is the first scene called when BootStrap is created
+// - Think of it as the Main Menu of a game
+
 import Phaser from 'phaser';
 
 import { BootStrap } from './BootStrap';
