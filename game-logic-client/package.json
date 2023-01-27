@@ -1,0 +1,20 @@
+{
+  "name": "game-logic-client",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "rm -rf ../game-logic-server/game-build; tsc && vite build",
+    "postbuild": "mv dist ../game-logic-server/game-build; rm ../game-logic-server/views/ejs.index.ejs; cp ../game-logic-server/game-build/index.html ../game-logic-server/views/ejs-index.ejs; ",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.18",
+    "typescript": "^4.9.3",
+    "vite": "^4.0.0"
+  },
+  "dependencies": {
+    "phaser": "^3.55.2"
+  }
+}
