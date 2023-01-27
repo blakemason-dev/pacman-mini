@@ -7,26 +7,24 @@ import {
     Changed,
     Not
 } from 'bitecs';
-
+import { iServerGameConfig } from '../../../../../game-server/src/types/iServerGameConfig';
 import { Image } from '../components/Image';
-import { ServerCoordinateConverter } from '../components/network/ServerCoordinateConverter';
+import { ServerGameObjectSync } from '../components/network/ServerGameObjectSync';
 import { Transform } from '../components/Transform';
 
 import * as AssetLibrary from '../libraries/AssetLibrary';
 
 import * as ConvertServer from '../utilities/ConvertServer';
 
-export const createImageSystem = (scene: Phaser.Scene) => {
+export const createImageSystem = (scene: Phaser.Scene, serverGameConfig: iServerGameConfig) => {
     const imagesById = new Map<number, Phaser.GameObjects.Image>();
     
-    const imageQuery = defineQuery([Transform, Image]);
+    const imageQuery = defineQuery([Transform, Image, Not(ServerGameObjectSync)]);
     const imageQueryEnter = enterQuery(imageQuery);
     const imageQueryExit = exitQuery(imageQuery);
 
-    const imageMovedQuery = defineQuery([Changed(Transform), Image, Not(ServerCoordinateConverter)]);
-
-    const imageConversionQuery = defineQuery([Transform, Image, ServerCoordinateConverter]);
-    const imageConversionQueryEnter = enterQuery(imageConversionQuery);
+    const serverImageQuery = defineQuery([Transform, Image, ServerGameObjectSync]);
+    const serverImageQueryEnter = enterQuery(serverImageQuery);
 
     return defineSystem((world: IWorld) => {
         // ENTER: Image, Transform
@@ -47,16 +45,9 @@ export const createImageSystem = (scene: Phaser.Scene) => {
             )
         });
 
-        // EXIT: Image, Transform
-        const exitImages = imageQueryExit(world);
-        exitImages.map(eid => {
-            imagesById.get(eid)?.destroy();
-            imagesById.delete(eid);
-        });
-
         // UPDATE: Changed(Transform), Image, Not(ServerCoordinateConverter)
-        const imagesMoved = imageMovedQuery(world);
-        imagesMoved.map(eid => {
+        const images = imageQuery(world);
+        images.map(eid => {
             imagesById.get(eid)?.setPosition(
                 Transform.position.x[eid],
                 Transform.position.y[eid]
@@ -64,17 +55,24 @@ export const createImageSystem = (scene: Phaser.Scene) => {
             imagesById.get(eid)?.setRotation(Transform.rotation[eid]);
         });
 
+        // EXIT: Image, Transform
+        const exitImages = imageQueryExit(world);
+        exitImages.map(eid => {
+            imagesById.get(eid)?.destroy();
+            imagesById.delete(eid);
+        });
+
+
         // ENTER: Transform, Image, ServerCoordinateConverter
-        const enterImageConversions = imageConversionQueryEnter(world);
-        enterImageConversions.map(eid => {
+        const serverImagesEnter = serverImageQueryEnter(world);
+        serverImagesEnter.map(eid => {
             // create a converter config
             const config = {
-                width: ServerCoordinateConverter.width[eid],
-                height: ServerCoordinateConverter.height[eid],
-                originX: ServerCoordinateConverter.originX[eid],
-                originY: ServerCoordinateConverter.originY[eid],
+                width: serverGameConfig.width,
+                height: serverGameConfig.height,
+                originX: serverGameConfig.originX,
+                originY: serverGameConfig.originY,
             }
-
             // update image position
             imagesById.get(eid)?.setPosition(
                 ConvertServer.xToPhaser(Transform.position.x[eid], config, scene.scale),
@@ -86,14 +84,14 @@ export const createImageSystem = (scene: Phaser.Scene) => {
         });
 
         // UPDATE: Transform, Image, ServerCoordinateConverter
-        const imageConversions = imageConversionQuery(world);
-        imageConversions.map(eid => {
+        const serverImagesUpdate = serverImageQuery(world);
+        serverImagesUpdate.map(eid => {
             // create a converter config
             const config = {
-                width: ServerCoordinateConverter.width[eid],
-                height: ServerCoordinateConverter.height[eid],
-                originX: ServerCoordinateConverter.originX[eid],
-                originY: ServerCoordinateConverter.originY[eid],
+                width: serverGameConfig.width,
+                height: serverGameConfig.height,
+                originX: serverGameConfig.originX,
+                originY: serverGameConfig.originY,
             }
 
             // update image position

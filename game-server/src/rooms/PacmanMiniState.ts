@@ -4,9 +4,9 @@ import { sGameObject } from "../types/sGameObject";
 
 
 export default class PacmanMiniState extends Schema implements iPacmanMiniState {
-    @type([sGameObject])
-    gameObjects: MapSchema<sGameObject> = new MapSchema<sGameObject>();
+    @type({map: sGameObject})
+    gameObjects = new MapSchema<sGameObject>();
 
     @type('number')
-    status: number = 0;
+    status = 0;
 }

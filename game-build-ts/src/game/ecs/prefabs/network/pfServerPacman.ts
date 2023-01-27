@@ -8,19 +8,13 @@ import * as AssetLibrary from '../../libraries/AssetLibrary';
 
 import { Image } from '../../components/Image';
 import { Transform } from '../../components/Transform';
-import { ServerPacmanController } from '../../components/network/ServerPacmanController';
-import { ServerCoordinateConverter } from '../../components/network/ServerCoordinateConverter';
-import { ServerGameConfig } from '../../../../../server/types/game-config';
-import { NameTag } from '../../components/NameTag';
+import { ServerGameObjectSync } from '../../components/network/ServerGameObjectSync';
 
-export const createPfServerPacman = (world: IWorld, serverIndex: number, serverGameConfig: ServerGameConfig) => {
+export const createPfServerPacman = (world: IWorld, serverEid: number) => {
     const peid = addEntity(world);
 
-    addComponent(world, ServerPacmanController, peid);
-    ServerPacmanController.serverIndex[peid] = serverIndex;
-
     addComponent(world, Image, peid);
-    Image.textureIndex[peid] = AssetLibrary.getIndex(serverIndex === 0 ? 'yellow-pacman' : 'blue-pacman');
+    Image.textureIndex[peid] = AssetLibrary.getIndex('yellow-pacman');
     Image.width[peid] = 32;
     Image.height[peid] = 32;
     Image.origin.x[peid] = 0.5;
@@ -30,11 +24,8 @@ export const createPfServerPacman = (world: IWorld, serverIndex: number, serverG
     Transform.position.x[peid] = 0;
     Transform.position.y[peid] = 0;
 
-    addComponent(world, ServerCoordinateConverter, peid);
-    ServerCoordinateConverter.width[peid] = serverGameConfig.width;
-    ServerCoordinateConverter.height[peid] = serverGameConfig.height;
-    ServerCoordinateConverter.originX[peid] = serverGameConfig.originX;
-    ServerCoordinateConverter.originY[peid] = serverGameConfig.originY;
+    addComponent(world, ServerGameObjectSync, peid);
+    ServerGameObjectSync.serverEid[peid] = serverEid;
 
     return peid;
 }

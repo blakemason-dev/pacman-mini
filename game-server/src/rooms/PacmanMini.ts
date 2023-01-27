@@ -1,4 +1,5 @@
 import { 
+    createWorld,
     IWorld,
     System
 } from "bitecs";
@@ -38,9 +39,15 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
     }
 
     startMatch() {
+        // CREATE ECS WORLD
+        this.world = createWorld();
+
         // CREATE ENTITIES
         let eid = createPfPacmanEntity(this.world);
+        console.log('CHECK')
+        console.log(this.state);
         this.state.gameObjects.set(eid.toString(), new sPacman());
+        console.log('CHECK ME');
         
         // CREATE SYSTEMS
         this.systems.push(createClientMovementSystem());

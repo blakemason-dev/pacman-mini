@@ -4,7 +4,7 @@
 
 import Phaser from "phaser";
 
-// import * as AssetLibrary from '../libraries/AssetLibrary';
+import * as AssetLibrary from '../ecs/libraries/AssetLibrary';
 import GameServerHandler from "../services/GameServerHandler";
 import { EndMatch } from "./EndMatch";
 import { FindMatch } from "./FindMatch";
@@ -27,7 +27,7 @@ export class BootStrap extends Phaser.Scene {
         console.log('BootStrap: preload()');
 
         // load all assets for global use
-        // AssetLibrary.loadAll(this);
+        AssetLibrary.loadAll(this);
     }
 
     create() {

@@ -43,10 +43,10 @@ export class SearchMatch extends Phaser.Scene {
         this.bootStrap.server.join();
 
         // once we get a match started message, we can switch scenes
-        this.bootStrap.server.events.on('start-match', (gameConfig) => {
+        this.bootStrap.server.events.on('start-match', (serverGameConfig) => {
             console.log('SearchMath: Starting Match')
             this.sceneText.destroy();
-            this.bootStrap.switch('search-match', 'play-match', gameConfig);
+            this.bootStrap.switch('search-match', 'play-match', serverGameConfig);
         });
     }
 }

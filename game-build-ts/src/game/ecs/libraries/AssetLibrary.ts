@@ -1,8 +1,8 @@
 // ussage:
 //    import * as AssetLibrary from '../etc./etc.'
 
-import yellowPacman from '../assets/yellow-pacman.png';
-import bluePacman from '../assets/blue-pacman.png';
+import yellowPacman from '../../assets/yellow-pacman.png';
+import bluePacman from '../../assets/blue-pacman.png';
 // import redGhost from '../assets/red-ghost.png';
 // import yellowGhost from '../assets/yellow-ghost.png';
 // import pinkGhost from '../assets/pink-ghost.png';

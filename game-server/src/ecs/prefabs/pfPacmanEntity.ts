@@ -3,10 +3,10 @@ import {
     addComponent,
     IWorld
 } from 'bitecs';
+
 import { ClientMovement } from '../components/ClientMovement';
 import { P2Body } from '../components/P2Body';
 import { P2ShapeCircle } from '../components/P2ShapeCircle';
-
 
 export const createPfPacmanEntity = (world: IWorld) => {
     const eid = addEntity(world);

@@ -6,7 +6,7 @@ import { iPacmanMiniState } from '../../../../game-server/src/types/iPacmanMiniS
 
 export default class GameServerHandler {
     private client!: Client;
-    private room!: Room<iPacmanMiniState & Schema>;
+    room!: Room<iPacmanMiniState & Schema>;
     events!: EventEmitter;
 
     constructor() {
