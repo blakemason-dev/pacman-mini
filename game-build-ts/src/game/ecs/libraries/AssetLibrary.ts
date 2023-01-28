@@ -3,6 +3,7 @@
 
 import yellowPacman from '../../assets/yellow-pacman.png';
 import bluePacman from '../../assets/blue-pacman.png';
+import cliffArea from '../../assets/cliff-area.png';
 // import redGhost from '../assets/red-ghost.png';
 // import yellowGhost from '../assets/yellow-ghost.png';
 // import pinkGhost from '../assets/pink-ghost.png';
@@ -16,6 +17,11 @@ const library = [
     {
         key: 'blue-pacman',
         src: bluePacman,
+        type: 'IMAGE'
+    },
+    {
+        key: 'bg-cliff-area',
+        src: cliffArea,
         type: 'IMAGE'
     },
     // {

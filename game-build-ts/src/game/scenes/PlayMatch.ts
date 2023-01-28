@@ -6,6 +6,7 @@ import {
 } from 'bitecs';
 import Phaser from 'phaser';
 import { GameObjectType } from '../../../../game-server/src/types/sGameObject';
+import { createPfServerCliffArea } from '../ecs/prefabs/network/pfServerCliffArea';
 import { createPfServerPacman } from '../ecs/prefabs/network/pfServerPacman';
 import { createImageSystem } from '../ecs/systems/ImageSystem';
 import { createServerGameObjectSyncSystem } from '../ecs/systems/network/ServerGameObjectSyncSystem';
@@ -57,6 +58,10 @@ export class PlayMatch extends Phaser.Scene {
             switch (go.type) {
                 case GameObjectType.Pacman: {
                     createPfServerPacman(this.world, parseInt(eid));
+                    break;
+                }
+                case GameObjectType.Background: {
+                    createPfServerCliffArea(this.world, parseInt(eid), go);
                     break;
                 }
                 default: break;

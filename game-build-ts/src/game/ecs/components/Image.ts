@@ -10,5 +10,6 @@ export const Image = defineComponent({
     origin: {
         x: Types.f32,
         y: Types.f32
-    }
+    },
+    depth: Types.ui16,
 });

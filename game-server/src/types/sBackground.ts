@@ -9,6 +9,12 @@ export class sBackground extends sGameObject {
     @type('string')
     texture = "";
 
+    @type('number')
+    width = 10*1960/1080;
+
+    @type('number')
+    height = 10;
+
     constructor() {
         super();
         this.type = GameObjectType.Background;

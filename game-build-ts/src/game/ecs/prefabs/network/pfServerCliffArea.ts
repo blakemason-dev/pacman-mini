@@ -9,17 +9,26 @@ import { Image } from '../../components/Image';
 import { Transform } from '../../components/Transform';
 import { ServerGameObjectSync } from '../../components/network/ServerGameObjectSync';
 import { TransformRenderInterpolator } from '../../components/TransformRenderInterpolator';
+import { Size } from '../../components/Size';
+import GameServerHandler from '../../../services/GameServerHandler';
+import { sGameObject } from '../../../../../../game-server/src/types/sGameObject';
+import { sBackground } from '../../../../../../game-server/src/types/sBackground';
 
-export const createPfServerPacman = (world: IWorld, serverEid: number) => {
+export const createPfServerCliffArea = (
+    world: IWorld, 
+    serverEid: number, 
+    go: sGameObject) => {
+
     const eid = addEntity(world);
+    const goBg = go as sBackground;
 
     addComponent(world, Image, eid);
-    Image.textureIndex[eid] = AssetLibrary.getIndex('yellow-pacman');
-    Image.width[eid] = 1;
-    Image.height[eid] = 1;
+    Image.textureIndex[eid] = AssetLibrary.getIndex('bg-cliff-area');
+    Image.width[eid] = goBg.width;
+    Image.height[eid] = goBg.height;
     Image.origin.x[eid] = 0.5;
     Image.origin.y[eid] = 0.5;
-    Image.depth[eid] = 1;
+    Image.depth[eid] = 0;
 
     addComponent(world, Transform, eid);
     Transform.position.x[eid] = 0;
@@ -28,7 +37,11 @@ export const createPfServerPacman = (world: IWorld, serverEid: number) => {
     addComponent(world, ServerGameObjectSync, eid);
     ServerGameObjectSync.serverEid[eid] = serverEid;
 
-    addComponent(world, TransformRenderInterpolator, eid);
+    // addComponent(world, Size, eid);
+    // Size.width[eid] = goBg.width;
+    // Size.height[eid] = goBg.height;
+
+    // addComponent(world, TransformRenderInterpolator, eid);
 
     return eid;
 }
