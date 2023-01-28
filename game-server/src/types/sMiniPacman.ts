@@ -1,5 +1,5 @@
 import { Schema, type } from '@colyseus/schema';
-import { sGameObject } from "./sGameObject";
+import { GameObjectType, sGameObject } from "./sGameObject";
 import { sVector2 } from './sVector2';
 
 export class sMiniPacman extends sGameObject {
@@ -8,4 +8,8 @@ export class sMiniPacman extends sGameObject {
 
     @type('number')
     angle: number = 0;
+
+    constructor() {
+        super(GameObjectType.MiniPacman);
+    }
 }   

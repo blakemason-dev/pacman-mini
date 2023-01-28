@@ -1,17 +1,24 @@
 import { 
     createWorld,
     IWorld,
+    System,
 
 } from 'bitecs';
 import Phaser from 'phaser';
 import { GameObjectType } from '../../../../game-server/src/types/sGameObject';
 import { createPfServerPacman } from '../ecs/prefabs/network/pfServerPacman';
+import { createImageSystem } from '../ecs/systems/ImageSystem';
+import { createServerGameObjectSyncSystem } from '../ecs/systems/network/ServerGameObjectSyncSystem';
+import { createTransformRenderInterpolatorSystem } from '../ecs/systems/TransformRenderInterpolatorSystem';
+import { ClientInputHandler } from '../services/ClientInputHandler';
 
 import { BootStrap } from './BootStrap';
 
 export class PlayMatch extends Phaser.Scene {
     private bootStrap!: BootStrap;
     private world!: IWorld;
+    private systems: System[] = [];
+    private clientInputHandler!: ClientInputHandler;
 
     constructor() {
         super("play-match");
@@ -42,10 +49,10 @@ export class PlayMatch extends Phaser.Scene {
             }
         ).setOrigin(0, 0);
 
-        // CREATE ECS WORLD
+        // Create ECS world
         this.world = createWorld();
 
-        // CREATE ENTITIES BASED ON ROOM GAME OBJECTS
+        // Create entities based on server game objects
         this.bootStrap.server.room.state.gameObjects.forEach((go, eid) => {
             switch (go.type) {
                 case GameObjectType.Pacman: {
@@ -55,9 +62,23 @@ export class PlayMatch extends Phaser.Scene {
                 default: break;
             }
         });
+
+        // Start listening for input
+        this.clientInputHandler = new ClientInputHandler(this, this.bootStrap.server);
+        this.clientInputHandler.startListening();
+
+        // Create systems
+        this.systems.push(createServerGameObjectSyncSystem(this.bootStrap.server));
+        this.systems.push(createTransformRenderInterpolatorSystem(this.bootStrap.server));
+        this.systems.push(createImageSystem(this, serverGameConfig));
     }
 
     update(t: number, dt: number) {
+        if (!this.world) return;
 
+        // run systems
+        this.systems.map(system => {
+            system(this.world);
+        });
     }
 }

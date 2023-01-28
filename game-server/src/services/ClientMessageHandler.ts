@@ -58,11 +58,12 @@ export class ClientMessageHandler {
     }
 
     private getClientEid(client: Client) {
+        let returnEid = -1;
         this.room.state.gameObjects.forEach((go, eid) => {
             if (go.sessionId === client.sessionId) {
-                return eid;
+                returnEid = parseInt(eid);
             }
         });
-        return -1;
+        return returnEid;
     }
 }

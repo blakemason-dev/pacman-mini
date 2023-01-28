@@ -9,8 +9,14 @@ export enum GameObjectType {
 
 export class sGameObject extends Schema {
     @type('number')
-    type: number = -1;
+    type!: number;
 
     @type('string')
-    sessionId: string = "";
+    sessionId!: string;
+
+    constructor(type: GameObjectType = -1, sessionId: string = "") {
+        super();
+        this.type = type;
+        this.sessionId = sessionId;
+    }
 }

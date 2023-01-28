@@ -1,4 +1,4 @@
-import { 
+import {
     createWorld,
     IWorld,
     System
@@ -20,16 +20,25 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
 
     onCreate() {
         console.log('PacmanMiniRoom: onCreate()');
-        
+
         // limit number clients
         this.maxClients = 1;
 
+        this.setState(new PacmanMiniState());
+
         // fire up the message handler
         this.clientMessageHandler = new ClientMessageHandler(this);
+
+        // CREATE ECS WORLD
+        this.world = createWorld();
     }
 
     onJoin(client: Client) {
         console.log('PacmanMiniRoom: onJoin()' + ' => ' + client.sessionId);
+
+        // CREATE ENTITIES
+        let eid = createPfPacmanEntity(this.world);
+        this.state.gameObjects.set(eid.toString(), new sPacman(client.sessionId));
 
         this.startMatch();
     }
@@ -39,16 +48,7 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
     }
 
     startMatch() {
-        // CREATE ECS WORLD
-        this.world = createWorld();
 
-        // CREATE ENTITIES
-        let eid = createPfPacmanEntity(this.world);
-        console.log('CHECK')
-        console.log(this.state);
-        this.state.gameObjects.set(eid.toString(), new sPacman());
-        console.log('CHECK ME');
-        
         // CREATE SYSTEMS
         this.systems.push(createClientMovementSystem());
         this.systems.push(createP2PhysicsSystem());
@@ -56,6 +56,7 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
 
         // set the update interval
         this.setSimulationInterval((dt) => this.update(dt));
+        this.setPatchRate(100);
 
         // start listening for client messages
         this.clientMessageHandler.startListening();

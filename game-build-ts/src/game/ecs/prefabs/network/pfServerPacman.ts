@@ -5,10 +5,10 @@ import {
 } from 'bitecs';
 
 import * as AssetLibrary from '../../libraries/AssetLibrary';
-
 import { Image } from '../../components/Image';
 import { Transform } from '../../components/Transform';
 import { ServerGameObjectSync } from '../../components/network/ServerGameObjectSync';
+import { TransformRenderInterpolator } from '../../components/TransformRenderInterpolator';
 
 export const createPfServerPacman = (world: IWorld, serverEid: number) => {
     const peid = addEntity(world);
@@ -26,6 +26,8 @@ export const createPfServerPacman = (world: IWorld, serverEid: number) => {
 
     addComponent(world, ServerGameObjectSync, peid);
     ServerGameObjectSync.serverEid[peid] = serverEid;
+
+    addComponent(world, TransformRenderInterpolator, peid);
 
     return peid;
 }
