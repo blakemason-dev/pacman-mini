@@ -105,6 +105,8 @@ export const createImageSystem = (scene: Phaser.Scene, serverGameConfig: iServer
                     ConvertServer.xToPhaser(TransformRenderInterpolator.interp.position.x[eid], config, scene.scale),
                     ConvertServer.yToPhaser(TransformRenderInterpolator.interp.position.y[eid], config, scene.scale)
                 );
+                // update image angle
+                imagesById.get(eid)?.setAngle(ConvertServer.radToPhaserAngle(TransformRenderInterpolator.interp.rotation[eid]));
             }
             else {
                 // update image position
@@ -112,10 +114,10 @@ export const createImageSystem = (scene: Phaser.Scene, serverGameConfig: iServer
                     ConvertServer.xToPhaser(Transform.position.x[eid], config, scene.scale),
                     ConvertServer.yToPhaser(Transform.position.y[eid], config, scene.scale)
                 );
+                // update image angle
+                imagesById.get(eid)?.setAngle(ConvertServer.radToPhaserAngle(Transform.rotation[eid]));
             }
-
-            // update image angle
-            imagesById.get(eid)?.setAngle(ConvertServer.radToPhaserAngle(Transform.rotation[eid]));
+            
         });
 
         // EXIT: Image, Transform

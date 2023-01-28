@@ -6,6 +6,9 @@ export class sBackground extends sGameObject {
     @type(sVector2)
     position: sVector2 = new sVector2();
 
+    @type('string')
+    texture = "";
+
     constructor() {
         super();
         this.type = GameObjectType.Background;

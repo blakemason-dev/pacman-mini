@@ -1,22 +1,22 @@
 import Phaser from "phaser";
-import { ServerGameConfig } from "../../../../server/types/game-config";
+import { iServerGameConfig } from "../../../../../game-server/src/types/iServerGameConfig";
 
-const xToPhaser = (serverX: number, serverGameConfig: ServerGameConfig, phaserScale: Phaser.Scale.ScaleManager) => {
+const xToPhaser = (serverX: number, iServerGameConfig: iServerGameConfig, phaserScale: Phaser.Scale.ScaleManager) => {
     const { width } = phaserScale;
 
-    return serverX * width / serverGameConfig.width + serverGameConfig.originX * width;
+    return serverX * width / iServerGameConfig.width + iServerGameConfig.originX * width;
 }
 
-const yToPhaser = (serverY: number, serverGameConfig: ServerGameConfig, phaserScale: Phaser.Scale.ScaleManager) => {
+const yToPhaser = (serverY: number, iServerGameConfig: iServerGameConfig, phaserScale: Phaser.Scale.ScaleManager) => {
     const { height } = phaserScale;
 
-    return height - serverY * height / serverGameConfig.height - serverGameConfig.originY * height;
+    return height - serverY * height / iServerGameConfig.height - iServerGameConfig.originY * height;
 }
 
-const dimToPhaser = (dimension: number, serverGameConfig: ServerGameConfig, phaserScale: Phaser.Scale.ScaleManager) => {
+const dimToPhaser = (dimension: number, iServerGameConfig: iServerGameConfig, phaserScale: Phaser.Scale.ScaleManager) => {
     const { height } = phaserScale;
 
-    return dimension * height / serverGameConfig.height;
+    return dimension * height / iServerGameConfig.height;
 }
 
 const radToPhaserAngle = (p2_rad: number) => {

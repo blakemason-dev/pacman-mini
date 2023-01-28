@@ -4,11 +4,13 @@ import {
     System
 } from "bitecs";
 import { Client, Room } from "colyseus";
+import { createPfBgCliffs } from "../ecs/prefabs/pfBgCliffs";
 import { createPfPacmanEntity } from "../ecs/prefabs/pfPacmanEntity";
 import { createClientMovementSystem } from "../ecs/systems/ClientMovementSystem";
 import { createGameObjectSyncSystem } from "../ecs/systems/GameObjectSyncSystem";
 import { createP2PhysicsSystem } from "../ecs/systems/P2PhysicsSystem";
 import { ClientMessageHandler } from "../services/ClientMessageHandler";
+import { sBackground } from "../types/sBackground";
 import { sGameObject } from "../types/sGameObject";
 import { sPacman } from "../types/sPacman";
 import PacmanMiniState from "./PacmanMiniState";
@@ -37,7 +39,7 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
         console.log('PacmanMiniRoom: onJoin()' + ' => ' + client.sessionId);
 
         // CREATE ENTITIES
-        let eid = createPfPacmanEntity(this.world);
+        const eid = createPfPacmanEntity(this.world);
         this.state.gameObjects.set(eid.toString(), new sPacman(client.sessionId));
 
         this.startMatch();
@@ -48,6 +50,9 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
     }
 
     startMatch() {
+        // Add game entities
+        const bgEid = createPfBgCliffs(this.world);
+        this.state.gameObjects.set(bgEid.toString(), new sBackground());
 
         // CREATE SYSTEMS
         this.systems.push(createClientMovementSystem());

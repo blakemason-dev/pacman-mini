@@ -37,9 +37,9 @@ export const TransformRenderInterpolator = defineComponent({
             y: Types.f32
         }
     },
-    previous_ms: Types.f32,
-    current_ms: Types.f32,
-    delta_ms: Types.f32,
-    needsUpdate: Types.ui8,
+    // previous_ms: Types.f32,
+    // current_ms: Types.f32,
+    // delta_ms: Types.f32,
+    // needsUpdate: Types.ui8,
     accum: Types.f32,
 });

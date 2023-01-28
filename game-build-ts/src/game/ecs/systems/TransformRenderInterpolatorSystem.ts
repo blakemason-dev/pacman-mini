@@ -11,6 +11,15 @@ import GameServerHandler from '../../services/GameServerHandler';
 import { Transform } from '../components/Transform';
 import { TransformRenderInterpolator } from '../components/TransformRenderInterpolator';
 
+const shortAngleDist = (a0: number, a1: number) => {
+    var max = Math.PI*2;
+    var da = (a1 - a0) % max;
+    return 2*da % max - da;
+}
+
+const angleLerp = (a0: number, a1: number, dt: number) => {
+    return a0 + shortAngleDist(a0, a1)*dt;
+}
 
 export const createTransformRenderInterpolatorSystem = (server: GameServerHandler) => {
 
@@ -32,13 +41,13 @@ export const createTransformRenderInterpolatorSystem = (server: GameServerHandle
 
         const enterInterps = interpQueryEnter(world);
         enterInterps.map(eid => {
-            TransformRenderInterpolator.previous.position.x[eid] = Transform.position.x[eid];
-            TransformRenderInterpolator.previous.position.y[eid] = Transform.position.y[eid];
-            TransformRenderInterpolator.previous.rotation[eid] = Transform.rotation[eid];
+            // TransformRenderInterpolator.previous.position.x[eid] = Transform.position.x[eid];
+            // TransformRenderInterpolator.previous.position.y[eid] = Transform.position.y[eid];
+            // TransformRenderInterpolator.previous.rotation[eid] = Transform.rotation[eid];
 
-            TransformRenderInterpolator.current.position.x[eid] = Transform.position.x[eid];
-            TransformRenderInterpolator.current.position.y[eid] = Transform.position.y[eid];
-            TransformRenderInterpolator.current.rotation[eid] = Transform.rotation[eid];
+            // TransformRenderInterpolator.current.position.x[eid] = Transform.position.x[eid];
+            // TransformRenderInterpolator.current.position.y[eid] = Transform.position.y[eid];
+            // TransformRenderInterpolator.current.rotation[eid] = Transform.rotation[eid];
 
             events.on('state-changed', state => {
                 // console.log('Number 2');
@@ -49,13 +58,10 @@ export const createTransformRenderInterpolatorSystem = (server: GameServerHandle
                 TransformRenderInterpolator.current.position.x[eid] = Transform.position.x[eid];
                 TransformRenderInterpolator.current.position.y[eid] = Transform.position.y[eid];
                 TransformRenderInterpolator.current.rotation[eid] = Transform.rotation[eid];
-
-                TransformRenderInterpolator.needsUpdate[eid] = 1;         
+    
                 TransformRenderInterpolator.accum[eid] = 0;
             });
         });
-
-
 
         const interps = interpQuery(world); 
         interps.map(eid => {
@@ -66,9 +72,9 @@ export const createTransformRenderInterpolatorSystem = (server: GameServerHandle
 
             TransformRenderInterpolator.interp.position.x[eid] = TransformRenderInterpolator.previous.position.x[eid] + interp * (TransformRenderInterpolator.current.position.x[eid] - TransformRenderInterpolator.previous.position.x[eid]);
             TransformRenderInterpolator.interp.position.y[eid] = TransformRenderInterpolator.previous.position.y[eid] + interp * (TransformRenderInterpolator.current.position.y[eid] - TransformRenderInterpolator.previous.position.y[eid]);
-            TransformRenderInterpolator.interp.rotation[eid] = TransformRenderInterpolator.previous.rotation[eid] + interp * (TransformRenderInterpolator.current.rotation[eid] - TransformRenderInterpolator.previous.rotation[eid]);
-            
-            // console.log(dt_ms, interp, TransformRenderInterpolator.interp.position.x[eid]);
+            // TransformRenderInterpolator.interp.rotation[eid] = TransformRenderInterpolator.previous.rotation[eid] + interp * (TransformRenderInterpolator.current.rotation[eid] - TransformRenderInterpolator.previous.rotation[eid]);
+            TransformRenderInterpolator.interp.rotation[eid] = 
+                angleLerp(TransformRenderInterpolator.previous.rotation[eid], TransformRenderInterpolator.current.rotation[eid], interp);
         });
 
         return world;
