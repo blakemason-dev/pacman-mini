@@ -9,13 +9,14 @@ import {
     Not
 } from 'bitecs';
 
-import p2 from 'p2';
+import p2, { Shape } from 'p2';
 import { ClientMovement } from '../components/ClientMovement';
 import { P2Body } from '../components/P2Body';
 import { P2ShapeBox } from '../components/P2ShapeBox';
 import { P2ShapeCircle } from '../components/P2ShapeCircle';
+import { EventEmitter } from 'events';
 
-export const createP2PhysicsSystem = () => {
+export const createP2PhysicsSystem = (events: EventEmitter) => {
     // create our physics world
     const p2World = new p2.World({
         gravity: [0, 0]
@@ -44,6 +45,21 @@ export const createP2PhysicsSystem = () => {
 
     // body and client movement queries
     const clientMoveBodyQuery = defineQuery([P2Body, ClientMovement]);
+
+    // handle contact events
+    p2World.on('beginContact', (data: { shapeA: p2.Shape, shapeB: p2.Shape, bodyA: p2.Body, bodyB: p2.Body }) => {
+        let eids: number[] = [];
+        // console.log(data.shapeA, data.shapeB, data.bodyA, data.bodyB);
+
+        p2BodiesById.forEach((val, key, map) => {
+            if (val.id === data.bodyA.id || val.id === data.bodyB.id) {
+                eids.push(key);
+            }
+        });
+
+        events.emit('beginEntityContact', eids);
+    });
+
 
     const FIXED_TIME_STEP = 1 / 20;
     let previous_ms = Date.now();
@@ -74,7 +90,7 @@ export const createP2PhysicsSystem = () => {
             }
 
             // set collsion response
-            bod.collisionResponse = P2Body.collisionResponse ? true : false;
+            bod.collisionResponse = P2Body.collisionResponse[eid] ? true : false;
 
             // add body to the world
             p2World.addBody(bod);
@@ -95,7 +111,7 @@ export const createP2PhysicsSystem = () => {
             if (shape) {
                 p2BodiesById.get(eid)?.addShape(shape);
             }
-            
+
             // set shape in entity map
             p2ShapeCirclesById.set(eid, shape);
         });
@@ -112,7 +128,7 @@ export const createP2PhysicsSystem = () => {
             if (shape) {
                 p2BodiesById.get(eid)?.addShape(shape);
             }
-            
+
             // set shape in entity map
             p2ShapeBoxesById.set(eid, shape);
         });
@@ -145,6 +161,7 @@ export const createP2PhysicsSystem = () => {
         });
 
         // EXIT
+
 
         return ecsWorld;
     })

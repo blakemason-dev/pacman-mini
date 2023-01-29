@@ -18,6 +18,7 @@ export const createPfPacmanEntity = (world: IWorld) => {
     P2Body.position.x[eid] = 0;
     P2Body.position.y[eid] = 0;
     P2Body.angle[eid] = 0;
+    P2Body.collisionResponse[eid] = 1;
 
     addComponent(world, P2ShapeCircle, eid);
     P2ShapeCircle.radius[eid] = 0.5;

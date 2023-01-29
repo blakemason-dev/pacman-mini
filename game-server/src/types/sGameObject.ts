@@ -5,7 +5,8 @@ export enum GameObjectType {
     MiniPacman,
     Rock,
     Background,
-    Wall
+    Wall,
+    Portal
 }
 
 export class sGameObject extends Schema {

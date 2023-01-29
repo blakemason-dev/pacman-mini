@@ -4,8 +4,10 @@ import {
     System
 } from "bitecs";
 import { Client, Room } from "colyseus";
+import { EventEmitter } from "p2";
 import { createPfBgCliffs } from "../ecs/prefabs/pfBgCliffs";
 import { createPfPacmanEntity } from "../ecs/prefabs/pfPacmanEntity";
+import { createPfPortal } from "../ecs/prefabs/pfPortal";
 import { createPfWall } from "../ecs/prefabs/pfWall";
 import { createClientMovementSystem } from "../ecs/systems/ClientMovementSystem";
 import { createGameObjectSyncSystem } from "../ecs/systems/GameObjectSyncSystem";
@@ -21,6 +23,7 @@ const UPDATE_FPS = 10;
 export default class PacmanMiniRoom extends Room<PacmanMiniState> {
     private world!: IWorld;
     private systems: System[] = [];
+    private events = new EventEmitter();
     private clientMessageHandler!: ClientMessageHandler;
 
     onCreate() {
@@ -45,7 +48,9 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
         const eid = createPfPacmanEntity(this.world);
         this.state.gameObjects.set(eid.toString(), new sPacman(client.sessionId));
 
-        this.startMatch();
+        if (this.clients.length === this.maxClients) {
+            this.startMatch();
+        }
     }
 
     onLeave(client: Client) {
@@ -59,9 +64,12 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
         // create walls
         this.createWalls();
 
+        // create portal to send mini pacmen home
+        createPfPortal(this.world, 0, 0, 1.5, this.state.gameObjects);
+
         // CREATE SYSTEMS
         this.systems.push(createClientMovementSystem());
-        this.systems.push(createP2PhysicsSystem());
+        this.systems.push(createP2PhysicsSystem(this.events));
         this.systems.push(createGameObjectSyncSystem(this.state.gameObjects));
 
         // set the update interval
