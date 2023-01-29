@@ -7,32 +7,32 @@ import {
 import * as AssetLibrary from '../../libraries/AssetLibrary';
 import { Image } from '../../components/Image';
 import { Transform } from '../../components/Transform';
-import { ServerGameObjectSync } from '../../components/network/ServerGameObjectSync';
+// import { ServerGameObjectSync } from '../../components/network/ServerGameObjectSync';
 import { sGameObject } from '../../../../../../game-server/src/types/sGameObject';
-import { sBackground } from '../../../../../../game-server/src/types/sBackground';
+import { sWall } from '../../../../../../game-server/src/types/sWall';
 
-export const createPfServerCliffArea = (
+export const createPfServerWall = (
     world: IWorld, 
     serverEid: number, 
     go: sGameObject) => {
 
     const eid = addEntity(world);
-    const goBg = go as sBackground;
+    const goWall = go as sWall;
 
     addComponent(world, Image, eid);
-    Image.textureIndex[eid] = AssetLibrary.getIndex('bg-rofl-ravine');
-    Image.width[eid] = goBg.width;
-    Image.height[eid] = goBg.height;
+    Image.textureIndex[eid] = AssetLibrary.getIndex('white-1x1');
+    Image.width[eid] = goWall.width;
+    Image.height[eid] = goWall.height;
     Image.origin.x[eid] = 0.5;
     Image.origin.y[eid] = 0.5;
     Image.depth[eid] = 0;
 
     addComponent(world, Transform, eid);
-    Transform.position.x[eid] = 0;
-    Transform.position.y[eid] = 0;
+    Transform.position.x[eid] = goWall.position.x;
+    Transform.position.y[eid] = goWall.position.y;
 
-    addComponent(world, ServerGameObjectSync, eid);
-    ServerGameObjectSync.serverEid[eid] = serverEid;
+    // addComponent(world, ServerGameObjectSync, eid);
+    // ServerGameObjectSync.serverEid[eid] = serverEid;
 
     return eid;
 }

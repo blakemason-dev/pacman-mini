@@ -8,6 +8,7 @@ import Phaser from 'phaser';
 import { GameObjectType } from '../../../../game-server/src/types/sGameObject';
 import { createPfServerCliffArea } from '../ecs/prefabs/network/pfServerCliffArea';
 import { createPfServerPacman } from '../ecs/prefabs/network/pfServerPacman';
+import { createPfServerWall } from '../ecs/prefabs/network/pfServerWall';
 import { createPfMainCamera } from '../ecs/prefabs/pfMainCamera';
 import { createImageSystem } from '../ecs/systems/ImageSystem';
 import { createMainCameraSystem } from '../ecs/systems/MainCameraSystem';
@@ -41,16 +42,16 @@ export class PlayMatch extends Phaser.Scene {
     async create(serverGameConfig: any) {
         console.log('PlayMatch: create()');
 
-        this.add.text(
-            this.scale.width * 0.025,
-            this.scale.width * 0.025,
-            "Scene: PlayMatch",
-            {
-                fontFamily: 'arial',
-                fontSize: '20px',
-                color: '#ffffff'
-            }
-        ).setOrigin(0, 0);
+        // this.add.text(
+        //     this.scale.width * 0.025,
+        //     this.scale.width * 0.025,
+        //     "Scene: PlayMatch",
+        //     {
+        //         fontFamily: 'arial',
+        //         fontSize: '20px',
+        //         color: '#ffffff'
+        //     }
+        // ).setOrigin(0, 0);
 
         // Create ECS world
         this.world = createWorld();
@@ -65,14 +66,17 @@ export class PlayMatch extends Phaser.Scene {
                     break;
                 }
                 case GameObjectType.Background: {
-                    createPfServerCliffArea(this.world, parseInt(eid), go);
+                    // createPfServerCliffArea(this.world, parseInt(eid), go);
                     break;
+                }
+                case GameObjectType.Wall: {
+                    createPfServerWall(this.world, parseInt(eid), go);
                 }
                 default: break;
             }
         });
 
-        // create a camera entity
+        // create a camera entity and follow the player
         createPfMainCamera(this.world, playerEid);
 
         // Start listening for input
@@ -84,11 +88,6 @@ export class PlayMatch extends Phaser.Scene {
         this.systems.push(createTransformRenderInterpolatorSystem(this.bootStrap.server, serverGameConfig));
         this.systems.push(createImageSystem(this, serverGameConfig));
         this.systems.push(createMainCameraSystem(this, serverGameConfig));
-
-        const sx = 100;
-        const sy = 10;
-        this.cameras.main.setScroll(sx, sy);
-        console.log(this.cameras.main.scrollX, this.cameras.main.scrollY);
     }
 
     update(t: number, dt: number) {

@@ -12,6 +12,7 @@ import {
 import p2 from 'p2';
 import { ClientMovement } from '../components/ClientMovement';
 import { P2Body } from '../components/P2Body';
+import { P2ShapeBox } from '../components/P2ShapeBox';
 import { P2ShapeCircle } from '../components/P2ShapeCircle';
 
 export const createP2PhysicsSystem = () => {
@@ -26,6 +27,7 @@ export const createP2PhysicsSystem = () => {
     // create a body map
     const p2BodiesById = new Map<number, p2.Body>();
     const p2ShapeCirclesById = new Map<number, p2.Circle>();
+    const p2ShapeBoxesById = new Map<number, p2.Box>();
 
     // body only queries
     const p2BodyQuery = defineQuery([P2Body]);
@@ -36,6 +38,9 @@ export const createP2PhysicsSystem = () => {
     const p2ShapeCircleQuery = defineQuery([P2Body, P2ShapeCircle]);
     const p2ShapeCircleQueryEnter = enterQuery(p2ShapeCircleQuery);
     const p2ShapeCircleQueryExit = exitQuery(p2ShapeCircleQuery);
+
+    const p2ShapeBoxQuery = defineQuery([P2Body, P2ShapeBox]);
+    const p2ShapeBoxQueryEnter = enterQuery(p2ShapeBoxQuery);
 
     // body and client movement queries
     const clientMoveBodyQuery = defineQuery([P2Body, ClientMovement]);
@@ -93,6 +98,23 @@ export const createP2PhysicsSystem = () => {
             
             // set shape in entity map
             p2ShapeCirclesById.set(eid, shape);
+        });
+
+        const enterP2ShapeBoxes = p2ShapeBoxQueryEnter(ecsWorld);
+        enterP2ShapeBoxes.map(eid => {
+            // create a new shape
+            const shape = new p2.Box({
+                width: P2ShapeBox.width[eid],
+                height: P2ShapeBox.height[eid]
+            });
+
+            // add shape to matching body
+            if (shape) {
+                p2BodiesById.get(eid)?.addShape(shape);
+            }
+            
+            // set shape in entity map
+            p2ShapeBoxesById.set(eid, shape);
         });
 
         // UPDATE

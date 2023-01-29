@@ -4,6 +4,8 @@
 import yellowPacman from '../../assets/yellow-pacman.png';
 import bluePacman from '../../assets/blue-pacman.png';
 import cliffArea from '../../assets/cliff-area.png';
+import roflRavine from '../../assets/rofl-ravine-sketch.png';
+import white1x1 from '../../assets/white-1x1.png';
 // import redGhost from '../assets/red-ghost.png';
 // import yellowGhost from '../assets/yellow-ghost.png';
 // import pinkGhost from '../assets/pink-ghost.png';
@@ -22,6 +24,16 @@ const library = [
     {
         key: 'bg-cliff-area',
         src: cliffArea,
+        type: 'IMAGE'
+    },
+    {
+        key: 'bg-rofl-ravine',
+        src: roflRavine,
+        type: 'IMAGE'
+    },
+    {
+        key: 'white-1x1',
+        src: white1x1,
         type: 'IMAGE'
     },
     // {
