@@ -10,8 +10,6 @@ import {
 } from 'bitecs';
 import { iServerGameConfig } from '../../../../../game-server/src/types/iServerGameConfig';
 import { Image } from '../components/Image';
-import { ServerGameObjectSync } from '../components/network/ServerGameObjectSync';
-import { Size } from '../components/Size';
 import { Transform } from '../components/Transform';
 import { TransformRenderInterpolator } from '../components/TransformRenderInterpolator';
 
@@ -22,77 +20,24 @@ import * as ConvertServer from '../utilities/ConvertServer';
 export const createImageSystem = (scene: Phaser.Scene, serverGameConfig: iServerGameConfig) => {
     const imagesById = new Map<number, Phaser.GameObjects.Image>();
 
-    // const imageQuery = defineQuery([Transform, Image, Not(ServerGameObjectSync)]);
-    // const imageQueryEnter = enterQuery(imageQuery);
-    // const imageQueryExit = exitQuery(imageQuery);
-
-    const serverImageQuery = defineQuery([Transform, Image, ServerGameObjectSync]);
-    const serverImageQueryEnter = enterQuery(serverImageQuery);
-    const serverImageQueryExit = exitQuery(serverImageQuery);
-
-    const sizedQuery = defineQuery([Image, Size]);
-    const sizedQueryEnter = enterQuery(sizedQuery);
-
-    const config = {
-        width: serverGameConfig.width,
-        height: serverGameConfig.height,
-        originX: serverGameConfig.originX,
-        originY: serverGameConfig.originY,
-    }
+    const imageQuery = defineQuery([Transform, Image]);
+    const imageQueryEnter = enterQuery(imageQuery);
+    const imageQueryExit = exitQuery(imageQuery);
 
     return defineSystem((world: IWorld) => {
-
-        // // ENTER: Image, Transform
-        // const enterImages = imageQueryEnter(world);
-        // enterImages.map(eid => {
-        //     imagesById.set(eid, scene.add.sprite(
-        //         Transform.position.x[eid],
-        //         Transform.position.y[eid],
-        //         AssetLibrary.getKey(Image.textureIndex[eid])
-        //     ));
-        //     imagesById.get(eid)?.setDisplaySize(
-        //         Image.width[eid],
-        //         Image.height[eid]
-        //     );
-        //     imagesById.get(eid)?.setOrigin(
-        //         Image.origin.x[eid],
-        //         Image.origin.y[eid]
-        //     )
-        // });
-
-        // // UPDATE: Changed(Transform), Image, Not(ServerCoordinateConverter)
-        // const images = imageQuery(world);
-        // images.map(eid => {
-        //     imagesById.get(eid)?.setPosition(
-        //         Transform.position.x[eid],
-        //         Transform.position.y[eid]
-        //     );
-        //     imagesById.get(eid)?.setRotation(Transform.rotation[eid]);
-        // });
-
-        // // EXIT: Image, Transform
-        // const exitImages = imageQueryExit(world);
-        // exitImages.map(eid => {
-        //     imagesById.get(eid)?.destroy();
-        //     imagesById.delete(eid);
-        // });
-
-
-
         ///////////////////////////////////////////////
-        // IMAGES WITH A SERVER GAME OBJECT ATTACHMENT
         // ENTER: Transform, Image, 
-        const serverImagesEnter = serverImageQueryEnter(world);
-        serverImagesEnter.map(eid => {
+        const imagesEnter = imageQueryEnter(world);
+        imagesEnter.map(eid => {
             // add to images by id
-            imagesById.set(eid, scene.add.sprite(
+            imagesById.set(eid, scene.add.image(
                 Transform.position.x[eid],
                 Transform.position.y[eid],
                 AssetLibrary.getKey(Image.textureIndex[eid])
             ));
             imagesById.get(eid)?.setDisplaySize(
-                ConvertServer.dimToPhaser(Image.width[eid], config, scene.scale),
-                ConvertServer.dimToPhaser(Image.height[eid], config, scene.scale)
+                ConvertServer.dimToPhaser(Image.width[eid], serverGameConfig, scene.scale),
+                ConvertServer.dimToPhaser(Image.height[eid], serverGameConfig, scene.scale)
             );
             imagesById.get(eid)?.setOrigin(
                 Image.origin.x[eid],
@@ -102,20 +47,20 @@ export const createImageSystem = (scene: Phaser.Scene, serverGameConfig: iServer
         });
 
         // UPDATE: Transform, Image, ServerCoordinateConverter
-        const serverImagesUpdate = serverImageQuery(world);
-        serverImagesUpdate.map(eid => {
+        const imagesUpdate = imageQuery(world);
+        imagesUpdate.map(eid => {
             // update image sizes (if screen changes)
             imagesById.get(eid)?.setDisplaySize(
-                ConvertServer.dimToPhaser(Image.width[eid], config, scene.scale),
-                ConvertServer.dimToPhaser(Image.height[eid], config, scene.scale)
+                ConvertServer.dimToPhaser(Image.width[eid], serverGameConfig, scene.scale),
+                ConvertServer.dimToPhaser(Image.height[eid], serverGameConfig, scene.scale)
             );
 
             // check if has interpolator
             if (hasComponent(world, TransformRenderInterpolator, eid)) {
                 // update image position
                 imagesById.get(eid)?.setPosition(
-                    ConvertServer.xToPhaser(TransformRenderInterpolator.interp.position.x[eid], config, scene.scale),
-                    ConvertServer.yToPhaser(TransformRenderInterpolator.interp.position.y[eid], config, scene.scale)
+                    ConvertServer.xToPhaser(TransformRenderInterpolator.interp.position.x[eid], serverGameConfig, scene.scale),
+                    ConvertServer.yToPhaser(TransformRenderInterpolator.interp.position.y[eid], serverGameConfig, scene.scale)
                 );
                 // update image angle
                 imagesById.get(eid)?.setAngle(ConvertServer.radToPhaserAngle(TransformRenderInterpolator.interp.rotation[eid]));
@@ -123,8 +68,8 @@ export const createImageSystem = (scene: Phaser.Scene, serverGameConfig: iServer
             else {
                 // update image position
                 imagesById.get(eid)?.setPosition(
-                    ConvertServer.xToPhaser(Transform.position.x[eid], config, scene.scale),
-                    ConvertServer.yToPhaser(Transform.position.y[eid], config, scene.scale)
+                    ConvertServer.xToPhaser(Transform.position.x[eid], serverGameConfig, scene.scale),
+                    ConvertServer.yToPhaser(Transform.position.y[eid], serverGameConfig, scene.scale)
                 );
                 // update image angle
                 imagesById.get(eid)?.setAngle(ConvertServer.radToPhaserAngle(Transform.rotation[eid]));
@@ -133,21 +78,10 @@ export const createImageSystem = (scene: Phaser.Scene, serverGameConfig: iServer
         });
 
         // EXIT: Image, Transform
-        const serverImagesExit = serverImageQueryExit(world);
-        serverImagesExit.map(eid => {
+        const imagesExit = imageQueryExit(world);
+        imagesExit.map(eid => {
             imagesById.get(eid)?.destroy();
             imagesById.delete(eid);
-        });
-
-
-        ///////////////////////////////
-        // image size changes
-        const sizedImagesEnter = sizedQueryEnter(world);
-        sizedImagesEnter.map(eid => {
-            imagesById.get(eid)?.setDisplaySize(
-                ConvertServer.dimToPhaser(Size.width[eid], config, scene.scale),
-                ConvertServer.dimToPhaser(Size.height[eid], config, scene.scale),
-            );
         });
 
         return world;

@@ -25,7 +25,6 @@ const calcGameWindow = () => {
         GAME_HEIGHT = window.innerHeight;
         GAME_WIDTH = window.innerHeight * 1960 / 1080;
     }
-    console.log(GAME_WIDTH, GAME_HEIGHT);
     game.scale.resize(GAME_WIDTH, GAME_HEIGHT);
 }
 

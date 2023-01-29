@@ -15,6 +15,8 @@ import { sGameObject } from "../types/sGameObject";
 import { sPacman } from "../types/sPacman";
 import PacmanMiniState from "./PacmanMiniState";
 
+const UPDATE_FPS = 10;
+
 export default class PacmanMiniRoom extends Room<PacmanMiniState> {
     private world!: IWorld;
     private systems: System[] = [];
@@ -61,7 +63,7 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
 
         // set the update interval
         this.setSimulationInterval((dt) => this.update(dt));
-        this.setPatchRate(100);
+        this.setPatchRate(1000 / UPDATE_FPS);
 
         // start listening for client messages
         this.clientMessageHandler.startListening();
@@ -71,7 +73,8 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
             width: 10 * 1920 / 1080,
             height: 10,
             originX: 0.5,
-            originY: 0.5
+            originY: 0.5,
+            updateFps: UPDATE_FPS,
         }
 
         // tell the clients match has been started

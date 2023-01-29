@@ -8,9 +8,6 @@ import * as AssetLibrary from '../../libraries/AssetLibrary';
 import { Image } from '../../components/Image';
 import { Transform } from '../../components/Transform';
 import { ServerGameObjectSync } from '../../components/network/ServerGameObjectSync';
-import { TransformRenderInterpolator } from '../../components/TransformRenderInterpolator';
-import { Size } from '../../components/Size';
-import GameServerHandler from '../../../services/GameServerHandler';
 import { sGameObject } from '../../../../../../game-server/src/types/sGameObject';
 import { sBackground } from '../../../../../../game-server/src/types/sBackground';
 
@@ -36,12 +33,6 @@ export const createPfServerCliffArea = (
 
     addComponent(world, ServerGameObjectSync, eid);
     ServerGameObjectSync.serverEid[eid] = serverEid;
-
-    // addComponent(world, Size, eid);
-    // Size.width[eid] = goBg.width;
-    // Size.height[eid] = goBg.height;
-
-    // addComponent(world, TransformRenderInterpolator, eid);
 
     return eid;
 }

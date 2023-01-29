@@ -10,4 +10,6 @@ export enum Message {
 
     ClientMoveRightBegin,
     ClientMoveRightEnd,
+
+    ClientDash
 }

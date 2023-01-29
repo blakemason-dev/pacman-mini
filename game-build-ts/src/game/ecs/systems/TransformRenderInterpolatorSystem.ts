@@ -5,6 +5,7 @@ import {
     exitQuery,
     IWorld,
 } from 'bitecs';
+import { iServerGameConfig } from '../../../../../game-server/src/types/iServerGameConfig';
 
 
 import GameServerHandler from '../../services/GameServerHandler';
@@ -21,7 +22,7 @@ const angleLerp = (a0: number, a1: number, dt: number) => {
     return a0 + shortAngleDist(a0, a1)*dt;
 }
 
-export const createTransformRenderInterpolatorSystem = (server: GameServerHandler) => {
+export const createTransformRenderInterpolatorSystem = (server: GameServerHandler, serverGameConfig: iServerGameConfig) => {
 
     const interpQuery = defineQuery([Transform, TransformRenderInterpolator]);
     const interpQueryEnter = enterQuery(interpQuery);
@@ -41,14 +42,6 @@ export const createTransformRenderInterpolatorSystem = (server: GameServerHandle
 
         const enterInterps = interpQueryEnter(world);
         enterInterps.map(eid => {
-            // TransformRenderInterpolator.previous.position.x[eid] = Transform.position.x[eid];
-            // TransformRenderInterpolator.previous.position.y[eid] = Transform.position.y[eid];
-            // TransformRenderInterpolator.previous.rotation[eid] = Transform.rotation[eid];
-
-            // TransformRenderInterpolator.current.position.x[eid] = Transform.position.x[eid];
-            // TransformRenderInterpolator.current.position.y[eid] = Transform.position.y[eid];
-            // TransformRenderInterpolator.current.rotation[eid] = Transform.rotation[eid];
-
             events.on('state-changed', state => {
                 // console.log('Number 2');
                 TransformRenderInterpolator.previous.position.x[eid] = TransformRenderInterpolator.current.position.x[eid];
@@ -67,7 +60,7 @@ export const createTransformRenderInterpolatorSystem = (server: GameServerHandle
         interps.map(eid => {
 
             TransformRenderInterpolator.accum[eid] += dt_ms;
-            let interp = TransformRenderInterpolator.accum[eid] / 100;
+            let interp = TransformRenderInterpolator.accum[eid] / (1000 / serverGameConfig.updateFps);
             if (interp > 1) interp = 1;
 
             TransformRenderInterpolator.interp.position.x[eid] = TransformRenderInterpolator.previous.position.x[eid] + interp * (TransformRenderInterpolator.current.position.x[eid] - TransformRenderInterpolator.previous.position.x[eid]);

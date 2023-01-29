@@ -101,6 +101,7 @@ export const createP2PhysicsSystem = () => {
         clientMoveBodiesQuery.map(eid => {
             const bod = p2BodiesById.get(eid);
             if (bod) {
+                bod.position = [P2Body.position.x[eid], P2Body.position.y[eid]];
                 bod.velocity = [P2Body.velocity.x[eid], P2Body.velocity.y[eid]];
                 bod.angle = P2Body.angle[eid];
             }

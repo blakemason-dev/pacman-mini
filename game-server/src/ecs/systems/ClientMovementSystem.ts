@@ -16,6 +16,7 @@ export const createClientMovementSystem = () => {
     const clientMoveQuery = defineQuery([P2Body, ClientMovement]);
 
     const PACMAN_SPEED = 1.5;
+    const DASH_DISTANCE = 3;
 
     return defineSystem((ecsWorld: IWorld) => {
 
@@ -38,7 +39,6 @@ export const createClientMovementSystem = () => {
                 velX = 1;
             }
 
-            // normalise the velocity
             let length = 1;
             if (Math.abs(velX) > 0 || Math.abs(velY) > 0) {
                 length = Math.sqrt(velX ** 2 + velY ** 2);
@@ -50,9 +50,19 @@ export const createClientMovementSystem = () => {
                 P2Body.velocity.x[eid] = velX / length * PACMAN_SPEED;
                 P2Body.velocity.y[eid] = velY / length * PACMAN_SPEED;
                 P2Body.angle[eid] = angle;
+
+                // See if we can dash
+                if (ClientMovement.dash[eid]) {
+                    P2Body.position.x[eid] += velX / length * DASH_DISTANCE;
+                    P2Body.position.y[eid] += velY / length * DASH_DISTANCE;
+
+                    ClientMovement.dash[eid] = 0;
+                }
             } else {
                 P2Body.velocity.x[eid] = 0;
                 P2Body.velocity.y[eid] = 0;
+
+                ClientMovement.dash[eid] = 0;
             }
         });
 

@@ -51,6 +51,11 @@ export class ClientMessageHandler {
             const eid = this.getClientEid(client);
             if (eid > -1) ClientMovement.right[eid] = 0;
         });
+
+        this.room.onMessage(Message.ClientDash, (client: Client) => {
+            const eid = this.getClientEid(client);
+            if (eid > -1) ClientMovement.dash[eid] = 1;
+        });
     }
 
     stopListening() {

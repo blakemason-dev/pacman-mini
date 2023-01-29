@@ -8,7 +8,9 @@ import Phaser from 'phaser';
 import { GameObjectType } from '../../../../game-server/src/types/sGameObject';
 import { createPfServerCliffArea } from '../ecs/prefabs/network/pfServerCliffArea';
 import { createPfServerPacman } from '../ecs/prefabs/network/pfServerPacman';
+import { createPfMainCamera } from '../ecs/prefabs/pfMainCamera';
 import { createImageSystem } from '../ecs/systems/ImageSystem';
+import { createMainCameraSystem } from '../ecs/systems/MainCameraSystem';
 import { createServerGameObjectSyncSystem } from '../ecs/systems/network/ServerGameObjectSyncSystem';
 import { createTransformRenderInterpolatorSystem } from '../ecs/systems/TransformRenderInterpolatorSystem';
 import { ClientInputHandler } from '../services/ClientInputHandler';
@@ -53,11 +55,13 @@ export class PlayMatch extends Phaser.Scene {
         // Create ECS world
         this.world = createWorld();
 
+        let playerEid = -1;
+
         // Create entities based on server game objects
         this.bootStrap.server.room.state.gameObjects.forEach((go, eid) => {
             switch (go.type) {
                 case GameObjectType.Pacman: {
-                    createPfServerPacman(this.world, parseInt(eid));
+                    playerEid = createPfServerPacman(this.world, parseInt(eid));
                     break;
                 }
                 case GameObjectType.Background: {
@@ -68,14 +72,23 @@ export class PlayMatch extends Phaser.Scene {
             }
         });
 
+        // create a camera entity
+        createPfMainCamera(this.world, playerEid);
+
         // Start listening for input
         this.clientInputHandler = new ClientInputHandler(this, this.bootStrap.server);
         this.clientInputHandler.startListening();
 
         // Create systems
         this.systems.push(createServerGameObjectSyncSystem(this.bootStrap.server));
-        this.systems.push(createTransformRenderInterpolatorSystem(this.bootStrap.server));
+        this.systems.push(createTransformRenderInterpolatorSystem(this.bootStrap.server, serverGameConfig));
         this.systems.push(createImageSystem(this, serverGameConfig));
+        this.systems.push(createMainCameraSystem(this, serverGameConfig));
+
+        const sx = 100;
+        const sy = 10;
+        this.cameras.main.setScroll(sx, sy);
+        console.log(this.cameras.main.scrollX, this.cameras.main.scrollY);
     }
 
     update(t: number, dt: number) {

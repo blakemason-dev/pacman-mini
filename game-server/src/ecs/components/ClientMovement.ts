@@ -8,4 +8,5 @@ export const ClientMovement = defineComponent({
     down: Types.ui8,
     left: Types.ui8,
     right: Types.ui8,
+    dash: Types.ui8
 });

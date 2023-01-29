@@ -49,6 +49,9 @@ const gameServer = new Server({
 // register room handlers
 gameServer.define('pacman-mini', PacmanMiniRoom);  
 
+// simulate lag
+gameServer.simulateLatency(200);
+
 // register colyseus  monitor 
 app.use('/colyseus', monitor());
 

@@ -12,7 +12,6 @@ import { sBackground } from '../../../../../../game-server/src/types/sBackground
 import GameServerHandler from '../../../services/GameServerHandler';
 import { ServerGameObjectSync } from '../../components/network/ServerGameObjectSync';
 import { Transform } from '../../components/Transform';
-import { Size } from '../../components/Size';
 
 
 export const createServerGameObjectSyncSystem = (server: GameServerHandler) => {
@@ -23,8 +22,6 @@ export const createServerGameObjectSyncSystem = (server: GameServerHandler) => {
 
     const room = server.room;
     const events = server.events;
-
-    let prev_ms = Date.now();
 
     return defineSystem((world: IWorld) => {
         if (!room) return world;

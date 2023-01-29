@@ -12,6 +12,7 @@ export class ClientInputHandler {
     }
 
     startListening() {
+        // WASD controls
         this.scene.input.keyboard.on('keydown-W', () => {
             this.server.room?.send(Message.ClientMoveUpBegin);
         });
@@ -35,6 +36,11 @@ export class ClientInputHandler {
         });
         this.scene.input.keyboard.on('keyup-D', () => {
             this.server.room?.send(Message.ClientMoveRightEnd);
+        });
+
+        // Dash
+        this.scene.input.keyboard.on('keyup-L', () => {
+            this.server.room?.send(Message.ClientDash);
         });
     }
 
@@ -62,6 +68,11 @@ export class ClientInputHandler {
         });
         this.scene.input.keyboard.off('keyup-D', () => {
             this.server.room?.send(Message.ClientMoveRightEnd);
+        });
+
+        // Dash
+        this.scene.input.keyboard.off('keyup-L', () => {
+            this.server.room?.send(Message.ClientDash);
         });
     }
 }
