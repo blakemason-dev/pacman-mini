@@ -64,6 +64,13 @@ export const createClientMovementSystem = () => {
 
                 ClientMovement.dash[eid] = 0;
             }
+
+
+            // random collision check
+            if (ClientMovement.ouch[eid]) {
+                // console.log('OUCH!!');
+                ClientMovement.ouch[eid] = 0;
+            }
         });
 
         return ecsWorld;

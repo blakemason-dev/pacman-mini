@@ -9,8 +9,10 @@ import { Image } from '../../components/Image';
 import { Transform } from '../../components/Transform';
 import { ServerGameObjectSync } from '../../components/network/ServerGameObjectSync';
 import { TransformRenderInterpolator } from '../../components/TransformRenderInterpolator';
+import { sGameObject } from '../../../../../../game-server/src/types/sGameObject';
+import { sPacman } from '../../../../../../game-server/src/types/sPacman';
 
-export const createPfServerPacman = (world: IWorld, serverEid: number) => {
+export const createPfServerPacman = (world: IWorld, serverEid: number, go: sGameObject) => {
     const eid = addEntity(world);
 
     addComponent(world, Image, eid);
@@ -22,8 +24,9 @@ export const createPfServerPacman = (world: IWorld, serverEid: number) => {
     Image.depth[eid] = 1;
 
     addComponent(world, Transform, eid);
-    Transform.position.x[eid] = 0;
-    Transform.position.y[eid] = 0;
+    Transform.position.x[eid] = (go as sPacman).position.x;
+    Transform.position.y[eid] = (go as sPacman).position.y;
+    console.log((go as sPacman).position.x)
 
     addComponent(world, ServerGameObjectSync, eid);
     ServerGameObjectSync.serverEid[eid] = serverEid;

@@ -6,7 +6,8 @@ import {
     exitQuery,
     IWorld,
     Changed,
-    Not
+    Not,
+    hasComponent
 } from 'bitecs';
 
 import p2, { Shape } from 'p2';
@@ -49,7 +50,7 @@ export const createP2PhysicsSystem = (events: EventEmitter) => {
     // handle contact events
     p2World.on('beginContact', (data: { shapeA: p2.Shape, shapeB: p2.Shape, bodyA: p2.Body, bodyB: p2.Body }) => {
         let eids: number[] = [];
-        // console.log(data.shapeA, data.shapeB, data.bodyA, data.bodyB);
+        console.log('beginContact()');
 
         p2BodiesById.forEach((val, key, map) => {
             if (val.id === data.bodyA.id || val.id === data.bodyB.id) {
@@ -79,7 +80,11 @@ export const createP2PhysicsSystem = (events: EventEmitter) => {
                 mass: P2Body.mass[eid],
                 position: [P2Body.position.x[eid], P2Body.position.y[eid]],
                 angle: P2Body.angle[eid]
-            })
+            });
+
+            if (hasComponent(ecsWorld, ClientMovement, eid)) {
+                console.log(bod.position[0], P2Body.position.x[eid]);
+            }
 
             // set body type
             switch (P2Body.type[eid]) {

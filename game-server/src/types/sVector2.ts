@@ -7,9 +7,9 @@ export class sVector2 extends Schema {
     @type("number")
     y: number = 0;
 
-    constructor() {
+    constructor(x: number = 0, y: number = 0) {
         super();
-        this.x = 0;
-        this.y = 0;
+        this.x = x;
+        this.y = y;
     }
 }

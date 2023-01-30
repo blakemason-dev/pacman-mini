@@ -62,7 +62,7 @@ export class PlayMatch extends Phaser.Scene {
         this.bootStrap.server.room.state.gameObjects.forEach((go, eid) => {
             switch (go.type) {
                 case GameObjectType.Pacman: {
-                    playerEid = createPfServerPacman(this.world, parseInt(eid));
+                    playerEid = createPfServerPacman(this.world, parseInt(eid), go);
                     break;
                 }
                 case GameObjectType.Background: {

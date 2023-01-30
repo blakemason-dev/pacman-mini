@@ -9,6 +9,9 @@ export class sMiniPacman extends sGameObject {
     @type('number')
     angle: number = 0;
 
+    @type('number')
+    radius: number = 0.25;
+
     constructor() {
         super(GameObjectType.MiniPacman);
     }

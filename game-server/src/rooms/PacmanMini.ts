@@ -4,7 +4,6 @@ import {
     System
 } from "bitecs";
 import { Client, Room } from "colyseus";
-import { EventEmitter } from "p2";
 import { createPfBgCliffs } from "../ecs/prefabs/pfBgCliffs";
 import { createPfPacmanEntity } from "../ecs/prefabs/pfPacmanEntity";
 import { createPfPortal } from "../ecs/prefabs/pfPortal";
@@ -17,6 +16,8 @@ import { sBackground } from "../types/sBackground";
 import { sGameObject } from "../types/sGameObject";
 import { sPacman } from "../types/sPacman";
 import PacmanMiniState from "./PacmanMiniState";
+import { EventEmitter } from 'events';
+import { GameEventHandler } from "../services/GameEventHandler";
 
 const UPDATE_FPS = 10;
 
@@ -25,6 +26,7 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
     private systems: System[] = [];
     private events = new EventEmitter();
     private clientMessageHandler!: ClientMessageHandler;
+    private gameEventHandler!: GameEventHandler;
 
     onCreate() {
         console.log('PacmanMiniRoom: onCreate()');
@@ -39,6 +41,10 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
 
         // CREATE ECS WORLD
         this.world = createWorld();
+
+        // create game event handler
+        this.gameEventHandler = new GameEventHandler(this.world, this.events);
+        this.gameEventHandler.start();
     }
 
     onJoin(client: Client) {

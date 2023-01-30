@@ -42,6 +42,14 @@ export const createTransformRenderInterpolatorSystem = (server: GameServerHandle
 
         const enterInterps = interpQueryEnter(world);
         enterInterps.map(eid => {
+            TransformRenderInterpolator.previous.position.x[eid] = Transform.position.x[eid];
+            TransformRenderInterpolator.previous.position.y[eid] = Transform.position.y[eid];
+            TransformRenderInterpolator.previous.rotation[eid] = Transform.rotation[eid];
+
+            TransformRenderInterpolator.current.position.x[eid] = Transform.position.x[eid];
+            TransformRenderInterpolator.current.position.y[eid] = Transform.position.y[eid];
+            TransformRenderInterpolator.current.rotation[eid] = Transform.rotation[eid];
+
             events.on('state-changed', state => {
                 // console.log('Number 2');
                 TransformRenderInterpolator.previous.position.x[eid] = TransformRenderInterpolator.current.position.x[eid];
