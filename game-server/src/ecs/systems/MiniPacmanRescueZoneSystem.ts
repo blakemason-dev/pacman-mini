@@ -15,7 +15,7 @@ import { GameObjectSync } from '../components/GameObjectSync';
 import { MiniPacmanRescueZone } from '../components/MiniPacmanRescueZone';
 import { P2Body } from '../components/P2Body';
 
-export const createMiniPacmanRescuerSystem = (gameObjects: MapSchema<sGameObject>) => {
+export const createMiniPacmanRescueZoneSystem = (gameObjects: MapSchema<sGameObject>) => {
     // create queries
     const rescuerQuery = defineQuery([MiniPacmanRescueZone]);
     const rescuerQueryEnter = enterQuery(rescuerQuery);
