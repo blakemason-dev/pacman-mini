@@ -15,11 +15,11 @@ import { P2ShapeCircle } from '../components/P2ShapeCircle';
 
 export const createPfWall = (
     world: IWorld,
+    gos: MapSchema<sGameObject>,
     x: number,
     y: number,
     width: number,
-    height: number,
-    gos: MapSchema<sGameObject>
+    height: number
     ) => {
 
     const eid = addEntity(world);

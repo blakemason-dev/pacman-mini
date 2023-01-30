@@ -12,7 +12,9 @@ export class sMiniPacman extends sGameObject {
     @type('number')
     radius: number = 0.25;
 
-    constructor() {
+    constructor(x: number = 0, y: number = 0) {
         super(GameObjectType.MiniPacman);
+        this.position.x = x;
+        this.position.y = y;
     }
 }   

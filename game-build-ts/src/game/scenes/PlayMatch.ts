@@ -8,8 +8,10 @@ import Phaser from 'phaser';
 import { GameObjectType } from '../../../../game-server/src/types/sGameObject';
 import { createPfServerCliffArea } from '../ecs/prefabs/network/pfServerCliffArea';
 import { createPfServerPacman } from '../ecs/prefabs/network/pfServerPacman';
+import { createPfServerPortal } from '../ecs/prefabs/network/pfServerPortal';
 import { createPfServerWall } from '../ecs/prefabs/network/pfServerWall';
 import { createPfMainCamera } from '../ecs/prefabs/pfMainCamera';
+import { createCircleSystem } from '../ecs/systems/CircleSystem';
 import { createImageSystem } from '../ecs/systems/ImageSystem';
 import { createMainCameraSystem } from '../ecs/systems/MainCameraSystem';
 import { createServerGameObjectSyncSystem } from '../ecs/systems/network/ServerGameObjectSyncSystem';
@@ -71,6 +73,12 @@ export class PlayMatch extends Phaser.Scene {
                 }
                 case GameObjectType.Wall: {
                     createPfServerWall(this.world, parseInt(eid), go);
+                    break;
+                }
+                case GameObjectType.Portal: {
+                    console.log('creating portal');
+                    createPfServerPortal(this.world, go, parseInt(eid));
+                    break;
                 }
                 default: break;
             }
@@ -87,6 +95,7 @@ export class PlayMatch extends Phaser.Scene {
         this.systems.push(createServerGameObjectSyncSystem(this.bootStrap.server));
         this.systems.push(createTransformRenderInterpolatorSystem(this.bootStrap.server, serverGameConfig));
         this.systems.push(createImageSystem(this, serverGameConfig));
+        this.systems.push(createCircleSystem(this, serverGameConfig));
         this.systems.push(createMainCameraSystem(this, serverGameConfig));
     }
 

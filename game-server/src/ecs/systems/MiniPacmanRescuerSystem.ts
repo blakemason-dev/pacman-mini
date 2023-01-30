@@ -12,12 +12,12 @@ import {
 import { GameObjectType, sGameObject } from '../../types/sGameObject';
 import { sPacman } from '../../types/sPacman';
 import { GameObjectSync } from '../components/GameObjectSync';
-import { MiniPacmanRescuer } from '../components/MiniPacmanRescuer';
+import { MiniPacmanRescueZone } from '../components/MiniPacmanRescueZone';
 import { P2Body } from '../components/P2Body';
 
 export const createMiniPacmanRescuerSystem = (gameObjects: MapSchema<sGameObject>) => {
     // create queries
-    const rescuerQuery = defineQuery([MiniPacmanRescuer]);
+    const rescuerQuery = defineQuery([MiniPacmanRescueZone]);
     const rescuerQueryEnter = enterQuery(rescuerQuery);
     const rescuerQueryExit = exitQuery(rescuerQuery);
 

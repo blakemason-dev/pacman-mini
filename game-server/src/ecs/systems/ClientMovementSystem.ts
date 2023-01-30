@@ -67,9 +67,9 @@ export const createClientMovementSystem = () => {
 
 
             // random collision check
-            if (ClientMovement.ouch[eid]) {
-                // console.log('OUCH!!');
-                ClientMovement.ouch[eid] = 0;
+            if (ClientMovement.eventPortal[eid]) {
+                console.log('The Rescue Zone!!');
+                ClientMovement.eventPortal[eid] = 0;
             }
         });
 

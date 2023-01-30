@@ -3,6 +3,6 @@ import {
     Types,
 } from 'bitecs';
 
-export const MiniPacmanRescuer = defineComponent({
+export const MiniPacmanRescueZone = defineComponent({
     
 });

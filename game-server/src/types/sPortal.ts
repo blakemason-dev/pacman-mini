@@ -11,7 +11,7 @@ export class sPortal extends sGameObject {
 
     constructor(x: number, y: number, radius: number = 1.5) {
         super();
-        this.type = GameObjectType.Wall;
+        this.type = GameObjectType.Portal;
         this.position.x = x;
         this.position.y = y;
         this.radius = radius;

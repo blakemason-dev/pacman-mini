@@ -50,10 +50,10 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
     onJoin(client: Client) {
         console.log('PacmanMiniRoom: onJoin()' + ' => ' + client.sessionId);
 
-        // CREATE ENTITIES
-        const eid = createPfPacmanEntity(this.world);
-        this.state.gameObjects.set(eid.toString(), new sPacman(client.sessionId));
+        // create player pacman entity
+        createPfPacmanEntity(this.world, this.state.gameObjects, client.sessionId, 5, 0 );
 
+        // if we're at max clients start the match
         if (this.clients.length === this.maxClients) {
             this.startMatch();
         }
@@ -65,13 +65,13 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
 
     startMatch() {
         // Add game entities
-        const bgEid = createPfBgCliffs(this.world, this.state.gameObjects);
+        createPfBgCliffs(this.world, this.state.gameObjects);
 
         // create walls
         this.createWalls();
 
         // create portal to send mini pacmen home
-        createPfPortal(this.world, 0, 0, 1.5, this.state.gameObjects);
+        createPfPortal(this.world, this.state.gameObjects, 0, 0, 1.5, );
 
         // CREATE SYSTEMS
         this.systems.push(createClientMovementSystem());
@@ -106,10 +106,10 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
         const WIDTH = 20;
         const HEIGHT = 20;
 
-        const wallLeftEid = createPfWall(this.world, -WIDTH/2, 0, 1, HEIGHT, this.state.gameObjects);
-        const wallRightEid = createPfWall(this.world, WIDTH/2, 0, 1, HEIGHT, this.state.gameObjects);
-        const wallTopEid = createPfWall(this.world, 0, HEIGHT/2, WIDTH, 1, this.state.gameObjects);
-        const wallBottomEid = createPfWall(this.world, 0, -HEIGHT/2, WIDTH, 1, this.state.gameObjects);
+        const wallLeftEid = createPfWall(this.world, this.state.gameObjects, -WIDTH/2, 0, 1, HEIGHT);
+        const wallRightEid = createPfWall(this.world, this.state.gameObjects, WIDTH/2, 0, 1, HEIGHT);
+        const wallTopEid = createPfWall(this.world, this.state.gameObjects, 0, HEIGHT/2, WIDTH, 1);
+        const wallBottomEid = createPfWall(this.world, this.state.gameObjects, 0, -HEIGHT/2, WIDTH, 1);
 
         // generate some random walls
         const numObstacles = 10;
@@ -120,7 +120,7 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
             const y = Math.random() * (HEIGHT/2 - -HEIGHT/2) + -HEIGHT/2;
             const width = Math.random() * (BOX_DIM_MAX/2 - BOX_DIM_MIN/2) + BOX_DIM_MIN/2;
             const height = Math.random() * (BOX_DIM_MAX/2 - BOX_DIM_MIN/2) + BOX_DIM_MIN/2;
-            createPfWall(this.world, x, y, width, height, this.state.gameObjects);
+            createPfWall(this.world, this.state.gameObjects, x, y, width, height);
         }
     }
 

@@ -10,20 +10,22 @@ import { sWall } from '../../types/sWall';
 
 import { ClientMovement } from '../components/ClientMovement';
 import { GameObjectSync } from '../components/GameObjectSync';
-import { MiniPacmanRescuer } from '../components/MiniPacmanRescuer';
+import { MiniPacmanRescueZone } from '../components/MiniPacmanRescueZone';
 import { P2Body } from '../components/P2Body';
 import { P2ShapeBox } from '../components/P2ShapeBox';
 import { P2ShapeCircle } from '../components/P2ShapeCircle';
 
 export const createPfPortal = (
     world: IWorld,
+    gos: MapSchema<sGameObject>,
     x: number,
     y: number,
-    radius: number,
-    gos: MapSchema<sGameObject>
+    radius: number
     ) => {
 
     const eid = addEntity(world);
+
+    gos.set(eid.toString(), new sPortal(x, y, radius));
     
     // Set ECS components
     addComponent(world, P2Body, eid);
@@ -37,10 +39,8 @@ export const createPfPortal = (
     addComponent(world, P2ShapeCircle, eid);
     P2ShapeCircle.radius[eid] = radius;
 
-    addComponent(world, MiniPacmanRescuer, eid);
+    addComponent(world, MiniPacmanRescueZone, eid);
 
-    // Set room gameobject
-    gos.set(eid.toString(), new sPortal(x, y, radius));
 
 
     // don't need sync for static objects

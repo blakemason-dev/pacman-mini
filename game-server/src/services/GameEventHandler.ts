@@ -7,7 +7,7 @@ import {
 import { EventEmitter } from 'events';
 import { ClientMovement } from '../ecs/components/ClientMovement';
 import { MiniPacmanController } from '../ecs/components/MiniPacmanController';
-import { MiniPacmanRescuer } from '../ecs/components/MiniPacmanRescuer';
+import { MiniPacmanRescueZone } from '../ecs/components/MiniPacmanRescueZone';
 
 
 export class GameEventHandler {
@@ -24,11 +24,9 @@ export class GameEventHandler {
 
     start() {
         this.events.on('beginEntityContact', eids => {
-            const eidPair = this.getComponentPair(ClientMovement, MiniPacmanRescuer, eids);
-            console.log(eidPair);
+            const eidPair = this.getComponentPair(ClientMovement, MiniPacmanRescueZone, eids);
             if (eidPair) {
-                console.log('ouch');
-                ClientMovement.ouch[eidPair[0]] = 1;
+                ClientMovement.eventPortal[eidPair[0]] = 1;
             }
         });
 

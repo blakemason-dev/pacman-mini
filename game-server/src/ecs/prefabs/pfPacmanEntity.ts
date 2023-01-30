@@ -1,16 +1,20 @@
+import { MapSchema } from '@colyseus/schema';
 import {
     addEntity,
     addComponent,
     IWorld
 } from 'bitecs';
+import { sGameObject } from '../../types/sGameObject';
+import { sPacman } from '../../types/sPacman';
 
 import { ClientMovement } from '../components/ClientMovement';
 import { GameObjectSync } from '../components/GameObjectSync';
 import { P2Body } from '../components/P2Body';
 import { P2ShapeCircle } from '../components/P2ShapeCircle';
 
-export const createPfPacmanEntity = (world: IWorld) => {
+export const createPfPacmanEntity = (world: IWorld, gos: MapSchema<sGameObject>, sessionId: string, x: number, y: number) => {
     const eid = addEntity(world);
+    gos.set(eid.toString(), new sPacman(sessionId, x, y));
 
     addComponent(world, P2Body, eid);
     P2Body.mass[eid] = 5;
