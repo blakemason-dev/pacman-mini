@@ -10,6 +10,7 @@ import { P2ShapeCircle } from '../components/P2ShapeCircle';
 import { MapSchema } from '@colyseus/schema';
 import { sGameObject } from '../../types/sGameObject';
 import { sMiniPacman } from '../../types/sMiniPacman';
+import { MiniPacmanController } from '../components/MiniPacmanController';
 
 export const createPfMiniPacman = (world: IWorld, gos: MapSchema<sGameObject>, x: number, y: number) => {
     const eid = addEntity(world);
@@ -28,7 +29,7 @@ export const createPfMiniPacman = (world: IWorld, gos: MapSchema<sGameObject>, x
     // need to add offset code
 
     // add an NPC movement component here
-    // addComponent(world, ClientMovement, eid);
+    addComponent(world, MiniPacmanController, eid);
 
     addComponent(world, GameObjectSync, eid);
 

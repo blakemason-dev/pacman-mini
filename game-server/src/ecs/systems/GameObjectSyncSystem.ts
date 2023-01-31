@@ -13,6 +13,7 @@ import {
 } from 'bitecs';
 
 import { GameObjectType, sGameObject } from '../../types/sGameObject';
+import { sMiniPacman } from '../../types/sMiniPacman';
 import { sPacman } from '../../types/sPacman';
 import { GameObjectSync } from '../components/GameObjectSync';
 import { P2Body } from '../components/P2Body';
@@ -40,6 +41,13 @@ export const createGameObjectSyncSystem = (gameObjects: MapSchema<sGameObject>) 
                         pacman.position.x = x;
                         pacman.position.y = y;
                         pacman.angle = angle;
+                        break;
+                    }
+                    case GameObjectType.MiniPacman: {
+                        const miniPacman = go as sMiniPacman;
+                        miniPacman.position.x = x;
+                        miniPacman.position.y = y;
+                        miniPacman.angle = angle;
                         break;
                     }
                     default: {

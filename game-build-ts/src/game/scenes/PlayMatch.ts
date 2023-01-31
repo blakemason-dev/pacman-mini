@@ -7,6 +7,7 @@ import {
 import Phaser from 'phaser';
 import { GameObjectType } from '../../../../game-server/src/types/sGameObject';
 import { createPfServerCliffArea } from '../ecs/prefabs/network/pfServerCliffArea';
+import { createPfServerMiniPacman } from '../ecs/prefabs/network/pfServerMiniPacman';
 import { createPfServerPacman } from '../ecs/prefabs/network/pfServerPacman';
 import { createPfServerPortal } from '../ecs/prefabs/network/pfServerPortal';
 import { createPfServerWall } from '../ecs/prefabs/network/pfServerWall';
@@ -65,6 +66,10 @@ export class PlayMatch extends Phaser.Scene {
             switch (go.type) {
                 case GameObjectType.Pacman: {
                     playerEid = createPfServerPacman(this.world, parseInt(eid), go);
+                    break;
+                }
+                case GameObjectType.MiniPacman: {
+                    createPfServerMiniPacman(this.world, parseInt(eid), go);
                     break;
                 }
                 case GameObjectType.Background: {

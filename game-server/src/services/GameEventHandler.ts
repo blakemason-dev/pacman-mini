@@ -24,9 +24,19 @@ export class GameEventHandler {
 
     start() {
         this.events.on('beginEntityContact', eids => {
-            const eidPair = this.getComponentPair(ClientMovement, MiniPacmanRescueZone, eids);
+            let eidPair = this.getComponentPair(ClientMovement, MiniPacmanRescueZone, eids);
             if (eidPair) {
                 ClientMovement.eventPortal[eidPair[0]] = 1;
+            }
+
+            eidPair = this.getComponentPair(MiniPacmanController, MiniPacmanRescueZone, eids);
+            if (eidPair) {
+                MiniPacmanController.eventPortalContact[eidPair[0]] = 1;
+            }
+
+            eidPair = this.getComponentPair(MiniPacmanController, ClientMovement, eids);
+            if (eidPair) {
+                MiniPacmanController.eventPacmanContact[eidPair[0]] = 1;
             }
         });
 

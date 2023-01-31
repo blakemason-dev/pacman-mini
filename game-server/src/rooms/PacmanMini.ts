@@ -18,8 +18,12 @@ import { sPacman } from "../types/sPacman";
 import PacmanMiniState from "./PacmanMiniState";
 import { EventEmitter } from 'events';
 import { GameEventHandler } from "../services/GameEventHandler";
+import { createPfMiniPacman } from "../ecs/prefabs/pfMiniPacman";
+import { createMiniPacmanControllerSystem } from "../ecs/systems/MiniPacmanControllerSystem";
 
 const UPDATE_FPS = 10;
+const WIDTH = 20;
+const HEIGHT = 20;
 
 export default class PacmanMiniRoom extends Room<PacmanMiniState> {
     private world!: IWorld;
@@ -70,11 +74,15 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
         // create walls
         this.createWalls();
 
+        // create mini pacmen
+        this.createMiniPacmen();
+
         // create portal to send mini pacmen home
         createPfPortal(this.world, this.state.gameObjects, 0, 0, 1.5, );
 
         // CREATE SYSTEMS
         this.systems.push(createClientMovementSystem());
+        this.systems.push(createMiniPacmanControllerSystem(this.world, this.events));
         this.systems.push(createP2PhysicsSystem(this.events));
         this.systems.push(createGameObjectSyncSystem(this.state.gameObjects));
 
@@ -103,8 +111,7 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
     }
 
     createWalls() {
-        const WIDTH = 20;
-        const HEIGHT = 20;
+
 
         const wallLeftEid = createPfWall(this.world, this.state.gameObjects, -WIDTH/2, 0, 1, HEIGHT);
         const wallRightEid = createPfWall(this.world, this.state.gameObjects, WIDTH/2, 0, 1, HEIGHT);
@@ -121,6 +128,16 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
             const width = Math.random() * (BOX_DIM_MAX/2 - BOX_DIM_MIN/2) + BOX_DIM_MIN/2;
             const height = Math.random() * (BOX_DIM_MAX/2 - BOX_DIM_MIN/2) + BOX_DIM_MIN/2;
             createPfWall(this.world, this.state.gameObjects, x, y, width, height);
+        }
+    }
+
+    createMiniPacmen() {
+        const NUM_MINIS = 5;
+
+        for (let i = 0; i < NUM_MINIS; i++) {
+            const x = Math.random() * (WIDTH*0.9/2 - -WIDTH*0.9/2) + -WIDTH*0.9/2;
+            const y = Math.random() * (HEIGHT*0.9/2 - -HEIGHT*0.9/2) + -HEIGHT*0.9/2;
+            createPfMiniPacman(this.world, this.state.gameObjects, x, y);
         }
     }
 
