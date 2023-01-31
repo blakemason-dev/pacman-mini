@@ -30,4 +30,7 @@ export const MiniPacmanController = defineComponent({
 
     // follow variables
     followingEid: Types.ui8,
+
+    color: Types.ui16,
+
 });

@@ -12,4 +12,5 @@ export const Image = defineComponent({
         y: Types.f32
     },
     depth: Types.ui16,
+    tint: Types.ui16
 });

@@ -11,7 +11,6 @@ import {
 } from 'bitecs';
 
 import p2, { Shape } from 'p2';
-import { ClientMovement } from '../components/ClientMovement';
 import { P2Body } from '../components/P2Body';
 import { P2ShapeBox } from '../components/P2ShapeBox';
 import { P2ShapeCircle } from '../components/P2ShapeCircle';

@@ -8,12 +8,12 @@ import {
     Not
 } from 'bitecs';
 
-import { ClientMovement } from '../components/ClientMovement';
+import { ClientPacmanController } from '../components/ClientPacmanController';
 import { P2Body } from '../components/P2Body';
 
-export const createClientMovementSystem = () => {
+export const createClientPacmanControllerSystem = () => {
     // create queries
-    const clientMoveQuery = defineQuery([P2Body, ClientMovement]);
+    const clientMoveQuery = defineQuery([P2Body, ClientPacmanController]);
 
     const PACMAN_SPEED = 1.5;
     const DASH_DISTANCE = 3;
@@ -26,16 +26,16 @@ export const createClientMovementSystem = () => {
             let velY = 0;
             let angle = 0;
 
-            if (ClientMovement.up[eid]) {
+            if (ClientPacmanController.eventUp[eid]) {
                 velY = 1;
             }
-            if (ClientMovement.down[eid]) {
+            if (ClientPacmanController.eventDown[eid]) {
                 velY = -1;
             }
-            if (ClientMovement.left[eid]) {
+            if (ClientPacmanController.eventLeft[eid]) {
                 velX = -1;
             }
-            if (ClientMovement.right[eid]) {
+            if (ClientPacmanController.eventRight[eid]) {
                 velX = 1;
             }
 
@@ -52,24 +52,24 @@ export const createClientMovementSystem = () => {
                 P2Body.angle[eid] = angle;
 
                 // See if we can dash
-                if (ClientMovement.dash[eid]) {
+                if (ClientPacmanController.eventDash[eid]) {
                     P2Body.position.x[eid] += velX / length * DASH_DISTANCE;
                     P2Body.position.y[eid] += velY / length * DASH_DISTANCE;
 
-                    ClientMovement.dash[eid] = 0;
+                    ClientPacmanController.eventDash[eid] = 0;
                 }
             } else {
                 P2Body.velocity.x[eid] = 0;
                 P2Body.velocity.y[eid] = 0;
 
-                ClientMovement.dash[eid] = 0;
+                ClientPacmanController.eventDash[eid] = 0;
             }
 
 
             // random collision check
-            if (ClientMovement.eventPortal[eid]) {
+            if (ClientPacmanController.eventPortal[eid]) {
                 console.log('The Rescue Zone!!');
-                ClientMovement.eventPortal[eid] = 0;
+                ClientPacmanController.eventPortal[eid] = 0;
             }
         });
 

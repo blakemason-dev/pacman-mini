@@ -13,6 +13,7 @@ import GameServerHandler from '../../../services/GameServerHandler';
 import { ServerGameObjectSync } from '../../components/network/ServerGameObjectSync';
 import { Transform } from '../../components/Transform';
 import { sMiniPacman } from '../../../../../../game-server/src/types/sMiniPacman';
+import { Image } from '../../components/Image';
 
 
 export const createServerGameObjectSyncSystem = (server: GameServerHandler, ecsWorld: IWorld) => {
@@ -37,12 +38,15 @@ export const createServerGameObjectSyncSystem = (server: GameServerHandler, ecsW
                         Transform.position.x[eid] = (sgo as sPacman).position.x;
                         Transform.position.y[eid] = (sgo as sPacman).position.y;
                         Transform.rotation[eid] = (sgo as sPacman).angle;
+                        Image.tint[eid] = (sgo as sPacman).color;
+                        // console.log(Image.tint[eid]);
                         break;
                     }
                     case GameObjectType.MiniPacman: {
                         Transform.position.x[eid] = (sgo as sMiniPacman).position.x;
                         Transform.position.y[eid] = (sgo as sMiniPacman).position.y;
                         Transform.rotation[eid] = (sgo as sMiniPacman).angle;
+                        Image.tint[eid] = (sgo as sMiniPacman).color;
                         break;
                     }
                     // case GameObjectType.Background: {

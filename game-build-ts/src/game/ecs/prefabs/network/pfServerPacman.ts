@@ -11,6 +11,7 @@ import { ServerGameObjectSync } from '../../components/network/ServerGameObjectS
 import { TransformRenderInterpolator } from '../../components/TransformRenderInterpolator';
 import { sGameObject } from '../../../../../../game-server/src/types/sGameObject';
 import { sPacman } from '../../../../../../game-server/src/types/sPacman';
+import { PacmanColor } from '../../components/PacmanColor';
 
 export const createPfServerPacman = (world: IWorld, serverEid: number, go: sGameObject) => {
     const eid = addEntity(world);
@@ -22,6 +23,7 @@ export const createPfServerPacman = (world: IWorld, serverEid: number, go: sGame
     Image.origin.x[eid] = 0.5;
     Image.origin.y[eid] = 0.5;
     Image.depth[eid] = 1;
+    Image.tint[eid] = (go as sPacman).color;
 
     addComponent(world, Transform, eid);
     Transform.position.x[eid] = (go as sPacman).position.x;
@@ -31,6 +33,8 @@ export const createPfServerPacman = (world: IWorld, serverEid: number, go: sGame
     ServerGameObjectSync.serverEid[eid] = serverEid;
 
     addComponent(world, TransformRenderInterpolator, eid);
+
+    addComponent(world, PacmanColor, eid);
 
     return eid;
 }

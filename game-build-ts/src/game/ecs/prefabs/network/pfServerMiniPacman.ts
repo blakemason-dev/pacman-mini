@@ -16,12 +16,13 @@ export const createPfServerMiniPacman = (world: IWorld, serverEid: number, go: s
     const eid = addEntity(world);
 
     addComponent(world, Image, eid);
-    Image.textureIndex[eid] = AssetLibrary.getIndex('blue-pacman');
+    Image.textureIndex[eid] = AssetLibrary.getIndex('yellow-pacman');
     Image.width[eid] = 0.5;
     Image.height[eid] = 0.5;
     Image.origin.x[eid] = 0.5;
     Image.origin.y[eid] = 0.5;
     Image.depth[eid] = 1;
+    Image.tint[eid] = (go as sMiniPacman).color;
 
     addComponent(world, Transform, eid);
     Transform.position.x[eid] = (go as sMiniPacman).position.x;

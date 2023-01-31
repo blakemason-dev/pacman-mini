@@ -5,7 +5,7 @@ import {
 } from 'bitecs';
 
 import { EventEmitter } from 'events';
-import { ClientMovement } from '../ecs/components/ClientMovement';
+import { ClientPacmanController } from '../ecs/components/ClientPacmanController';
 import { MiniPacmanController } from '../ecs/components/MiniPacmanController';
 import { MiniPacmanRescueZone } from '../ecs/components/MiniPacmanRescueZone';
 
@@ -24,9 +24,9 @@ export class GameEventHandler {
 
     start() {
         this.events.on('beginEntityContact', eids => {
-            let eidPair = this.getComponentPair(ClientMovement, MiniPacmanRescueZone, eids);
+            let eidPair = this.getComponentPair(ClientPacmanController, MiniPacmanRescueZone, eids);
             if (eidPair) {
-                ClientMovement.eventPortal[eidPair[0]] = 1;
+                ClientPacmanController.eventPortal[eidPair[0]] = 1;
             }
 
             eidPair = this.getComponentPair(MiniPacmanController, MiniPacmanRescueZone, eids);
@@ -34,7 +34,7 @@ export class GameEventHandler {
                 MiniPacmanController.eventPortalContact[eidPair[0]] = 1;
             }
 
-            eidPair = this.getComponentPair(MiniPacmanController, ClientMovement, eids);
+            eidPair = this.getComponentPair(MiniPacmanController, ClientPacmanController, eids);
             if (eidPair) {
                 MiniPacmanController.eventPacmanContact[eidPair[0]] = 1;
                 MiniPacmanController.followingEid[eidPair[0]] = eidPair[1];

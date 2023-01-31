@@ -10,6 +10,7 @@ import {
 } from 'bitecs';
 import { iServerGameConfig } from '../../../../../game-server/src/types/iServerGameConfig';
 import { Image } from '../components/Image';
+import { PacmanColor } from '../components/PacmanColor';
 import { Transform } from '../components/Transform';
 import { TransformRenderInterpolator } from '../components/TransformRenderInterpolator';
 
@@ -23,6 +24,8 @@ export const createImageSystem = (scene: Phaser.Scene, serverGameConfig: iServer
     const imageQuery = defineQuery([Transform, Image]);
     const imageQueryEnter = enterQuery(imageQuery);
     const imageQueryExit = exitQuery(imageQuery);
+
+    const pacmenQuery = defineQuery([PacmanColor])
 
     return defineSystem((world: IWorld) => {
         ///////////////////////////////////////////////
@@ -74,6 +77,9 @@ export const createImageSystem = (scene: Phaser.Scene, serverGameConfig: iServer
                 // update image angle
                 imagesById.get(eid)?.setAngle(ConvertServer.radToPhaserAngle(Transform.rotation[eid]));
             }
+
+            // ensure tint is up to date
+            imagesById.get(eid)?.setTintFill(Image.tint[eid]);
             
         });
 
@@ -82,6 +88,32 @@ export const createImageSystem = (scene: Phaser.Scene, serverGameConfig: iServer
         imagesExit.map(eid => {
             imagesById.get(eid)?.destroy();
             imagesById.delete(eid);
+        });
+
+
+        // update pacmen colours
+        const pacmen = pacmenQuery(world);
+        pacmen.map(eid => {
+            // update texture based on current tint
+            switch (Image.tint[eid]) {
+                case 0xffcc00: {
+                    Image.textureIndex[eid] = AssetLibrary.getIndex('yellow-pacman');
+                    const str = AssetLibrary.getKey(Image.textureIndex[eid]);
+                    imagesById.get(eid)?.setTexture(str);
+                }
+                case 0xff0000: {
+                    Image.textureIndex[eid] = AssetLibrary.getIndex('red-pacman');
+                    const str = AssetLibrary.getKey(Image.textureIndex[eid]);
+                    imagesById.get(eid)?.setTexture(str);
+                }
+                case 0x0000ff: {
+                    Image.textureIndex[eid] = AssetLibrary.getIndex('blue-pacman');
+                    const str = AssetLibrary.getKey(Image.textureIndex[eid]);
+                    imagesById.get(eid)?.setTexture(str);
+                    console.log('check');
+                }
+                default: break;
+            }
         });
 
         return world;

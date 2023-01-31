@@ -5,10 +5,10 @@ import {
 } from "bitecs";
 import { Client, Room } from "colyseus";
 import { createPfBgCliffs } from "../ecs/prefabs/pfBgCliffs";
-import { createPfPacmanEntity } from "../ecs/prefabs/pfPacmanEntity";
+import { createPfClientPacman } from "../ecs/prefabs/pfClientPacman";
 import { createPfPortal } from "../ecs/prefabs/pfPortal";
 import { createPfWall } from "../ecs/prefabs/pfWall";
-import { createClientMovementSystem } from "../ecs/systems/ClientMovementSystem";
+import { createClientPacmanControllerSystem } from "../ecs/systems/ClientPacmanControllerSystem";
 import { createGameObjectSyncSystem } from "../ecs/systems/GameObjectSyncSystem";
 import { createP2PhysicsSystem } from "../ecs/systems/P2PhysicsSystem";
 import { ClientMessageHandler } from "../services/ClientMessageHandler";
@@ -55,7 +55,7 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
         console.log('PacmanMiniRoom: onJoin()' + ' => ' + client.sessionId);
 
         // create player pacman entity
-        createPfPacmanEntity(this.world, this.state.gameObjects, client.sessionId, 5, 0 );
+        createPfClientPacman(this.world, this.state.gameObjects, client.sessionId, 5, 0 );
 
         // if we're at max clients start the match
         if (this.clients.length === this.maxClients) {
@@ -81,7 +81,7 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
         createPfPortal(this.world, this.state.gameObjects, 0, 0, 1.5, );
 
         // CREATE SYSTEMS
-        this.systems.push(createClientMovementSystem());
+        this.systems.push(createClientPacmanControllerSystem());
         this.systems.push(createMiniPacmanControllerSystem(this.world, this.events));
         this.systems.push(createP2PhysicsSystem(this.events));
         this.systems.push(createGameObjectSyncSystem(this.state.gameObjects));
@@ -103,7 +103,7 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
         }
 
         // tell the clients match has been started
-        this.broadcast('start-match', gameConfig);
+        this.broadcast('start-match', gameConfig); 
     }
 
     stopMatch() {

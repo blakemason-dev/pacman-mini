@@ -7,7 +7,7 @@ import {
 import { sGameObject } from '../../types/sGameObject';
 import { sWall } from '../../types/sWall';
 
-import { ClientMovement } from '../components/ClientMovement';
+import { ClientPacmanController } from '../components/ClientPacmanController';
 import { GameObjectSync } from '../components/GameObjectSync';
 import { P2Body } from '../components/P2Body';
 import { P2ShapeBox } from '../components/P2ShapeBox';

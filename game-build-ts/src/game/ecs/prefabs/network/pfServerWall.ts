@@ -26,6 +26,7 @@ export const createPfServerWall = (
     Image.origin.x[eid] = 0.5;
     Image.origin.y[eid] = 0.5;
     Image.depth[eid] = 0;
+    Image.tint[eid] = 0xffffff;
 
     addComponent(world, Transform, eid);
     Transform.position.x[eid] = goWall.position.x;

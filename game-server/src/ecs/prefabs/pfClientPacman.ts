@@ -7,12 +7,12 @@ import {
 import { sGameObject } from '../../types/sGameObject';
 import { sPacman } from '../../types/sPacman';
 
-import { ClientMovement } from '../components/ClientMovement';
+import { ClientPacmanController } from '../components/ClientPacmanController';
 import { GameObjectSync } from '../components/GameObjectSync';
 import { P2Body } from '../components/P2Body';
 import { P2ShapeCircle } from '../components/P2ShapeCircle';
 
-export const createPfPacmanEntity = (world: IWorld, gos: MapSchema<sGameObject>, sessionId: string, x: number, y: number) => {
+export const createPfClientPacman = (world: IWorld, gos: MapSchema<sGameObject>, sessionId: string, x: number, y: number) => {
     const eid = addEntity(world);
     gos.set(eid.toString(), new sPacman(sessionId, x, y));
 
@@ -28,7 +28,7 @@ export const createPfPacmanEntity = (world: IWorld, gos: MapSchema<sGameObject>,
     P2ShapeCircle.radius[eid] = 0.5;
     // need to add offset code
 
-    addComponent(world, ClientMovement, eid);
+    addComponent(world, ClientPacmanController, eid);
 
     addComponent(world, GameObjectSync, eid);
 

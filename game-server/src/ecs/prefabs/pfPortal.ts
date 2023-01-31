@@ -8,7 +8,7 @@ import { sGameObject } from '../../types/sGameObject';
 import { sPortal } from '../../types/sPortal';
 import { sWall } from '../../types/sWall';
 
-import { ClientMovement } from '../components/ClientMovement';
+import { ClientPacmanController } from '../components/ClientPacmanController';
 import { GameObjectSync } from '../components/GameObjectSync';
 import { MiniPacmanRescueZone } from '../components/MiniPacmanRescueZone';
 import { P2Body } from '../components/P2Body';
@@ -44,7 +44,7 @@ export const createPfPortal = (
 
 
     // don't need sync for static objects
-    // addComponent(world, GameObjectSync, eid);
+    // addComponent(world, GameObjectSync, eid); 
 
     return eid;
 }
