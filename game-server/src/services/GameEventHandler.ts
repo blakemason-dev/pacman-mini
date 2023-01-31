@@ -37,6 +37,7 @@ export class GameEventHandler {
             eidPair = this.getComponentPair(MiniPacmanController, ClientMovement, eids);
             if (eidPair) {
                 MiniPacmanController.eventPacmanContact[eidPair[0]] = 1;
+                MiniPacmanController.followingEid[eidPair[0]] = eidPair[1];
             }
         });
 

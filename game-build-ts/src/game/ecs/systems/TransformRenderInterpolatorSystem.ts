@@ -4,6 +4,7 @@ import {
     enterQuery,
     exitQuery,
     IWorld,
+    hasComponent,
 } from 'bitecs';
 import { iServerGameConfig } from '../../../../../game-server/src/types/iServerGameConfig';
 
@@ -22,7 +23,7 @@ const angleLerp = (a0: number, a1: number, dt: number) => {
     return a0 + shortAngleDist(a0, a1)*dt;
 }
 
-export const createTransformRenderInterpolatorSystem = (server: GameServerHandler, serverGameConfig: iServerGameConfig) => {
+export const createTransformRenderInterpolatorSystem = (server: GameServerHandler, serverGameConfig: iServerGameConfig, ecsWorld: IWorld) => {
 
     const interpQuery = defineQuery([Transform, TransformRenderInterpolator]);
     const interpQueryEnter = enterQuery(interpQuery);
@@ -31,8 +32,28 @@ export const createTransformRenderInterpolatorSystem = (server: GameServerHandle
     const room = server.room;
     const events = server.events;
 
+    // create one off listeners
+    events.on('state-changed', state => {
+        const eids = interpQuery(ecsWorld);
+        eids.map(eid => {
+            if (hasComponent(ecsWorld, TransformRenderInterpolator, eid)) {
+                TransformRenderInterpolator.previous.position.x[eid] = TransformRenderInterpolator.current.position.x[eid];
+                TransformRenderInterpolator.previous.position.y[eid] = TransformRenderInterpolator.current.position.y[eid];
+                TransformRenderInterpolator.previous.rotation[eid] = TransformRenderInterpolator.current.rotation[eid];
+        
+                TransformRenderInterpolator.current.position.x[eid] = Transform.position.x[eid];
+                TransformRenderInterpolator.current.position.y[eid] = Transform.position.y[eid];
+                TransformRenderInterpolator.current.rotation[eid] = Transform.rotation[eid];
+        
+                TransformRenderInterpolator.accum[eid] = 0;
+            }
+        })
+    });
+
+    // for time keeping
     let previous_ms = Date.now();
     
+    // define the system
     return defineSystem((world: IWorld) => {
         if (!room) return world;
 
@@ -49,19 +70,6 @@ export const createTransformRenderInterpolatorSystem = (server: GameServerHandle
             TransformRenderInterpolator.current.position.x[eid] = Transform.position.x[eid];
             TransformRenderInterpolator.current.position.y[eid] = Transform.position.y[eid];
             TransformRenderInterpolator.current.rotation[eid] = Transform.rotation[eid];
-
-            events.on('state-changed', state => {
-                // console.log('Number 2');
-                TransformRenderInterpolator.previous.position.x[eid] = TransformRenderInterpolator.current.position.x[eid];
-                TransformRenderInterpolator.previous.position.y[eid] = TransformRenderInterpolator.current.position.y[eid];
-                TransformRenderInterpolator.previous.rotation[eid] = TransformRenderInterpolator.current.rotation[eid];
-
-                TransformRenderInterpolator.current.position.x[eid] = Transform.position.x[eid];
-                TransformRenderInterpolator.current.position.y[eid] = Transform.position.y[eid];
-                TransformRenderInterpolator.current.rotation[eid] = Transform.rotation[eid];
-    
-                TransformRenderInterpolator.accum[eid] = 0;
-            });
         });
 
         const interps = interpQuery(world); 
@@ -73,7 +81,6 @@ export const createTransformRenderInterpolatorSystem = (server: GameServerHandle
 
             TransformRenderInterpolator.interp.position.x[eid] = TransformRenderInterpolator.previous.position.x[eid] + interp * (TransformRenderInterpolator.current.position.x[eid] - TransformRenderInterpolator.previous.position.x[eid]);
             TransformRenderInterpolator.interp.position.y[eid] = TransformRenderInterpolator.previous.position.y[eid] + interp * (TransformRenderInterpolator.current.position.y[eid] - TransformRenderInterpolator.previous.position.y[eid]);
-            // TransformRenderInterpolator.interp.rotation[eid] = TransformRenderInterpolator.previous.rotation[eid] + interp * (TransformRenderInterpolator.current.rotation[eid] - TransformRenderInterpolator.previous.rotation[eid]);
             TransformRenderInterpolator.interp.rotation[eid] = 
                 angleLerp(TransformRenderInterpolator.previous.rotation[eid], TransformRenderInterpolator.current.rotation[eid], interp);
         });

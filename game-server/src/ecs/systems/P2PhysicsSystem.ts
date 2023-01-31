@@ -44,8 +44,9 @@ export const createP2PhysicsSystem = (events: EventEmitter) => {
     const p2ShapeBoxQuery = defineQuery([P2Body, P2ShapeBox]);
     const p2ShapeBoxQueryEnter = enterQuery(p2ShapeBoxQuery);
 
-    // body and client movement queries
-    const clientMoveBodyQuery = defineQuery([P2Body, ClientMovement]);
+    // body movement queries
+    // const clientMoveBodyQuery = defineQuery([P2Body]);
+    // const clientMoveBodyQuery = defineQuery([P2Body, ClientMovement]);
 
     // handle contact events
     p2World.on('beginContact', (data: { shapeA: p2.Shape, shapeB: p2.Shape, bodyA: p2.Body, bodyB: p2.Body }) => {
@@ -135,8 +136,8 @@ export const createP2PhysicsSystem = (events: EventEmitter) => {
 
         // UPDATE
         // 1) move any bodies controlled by client movement
-        const clientMoveBodiesQuery = clientMoveBodyQuery(ecsWorld);
-        clientMoveBodiesQuery.map(eid => {
+        const bodiesQuery = p2BodyQuery(ecsWorld);
+        bodiesQuery.map(eid => {
             const bod = p2BodiesById.get(eid);
             if (bod) {
                 bod.position = [P2Body.position.x[eid], P2Body.position.y[eid]];

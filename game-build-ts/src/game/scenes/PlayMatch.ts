@@ -97,8 +97,8 @@ export class PlayMatch extends Phaser.Scene {
         this.clientInputHandler.startListening();
 
         // Create systems
-        this.systems.push(createServerGameObjectSyncSystem(this.bootStrap.server));
-        this.systems.push(createTransformRenderInterpolatorSystem(this.bootStrap.server, serverGameConfig));
+        this.systems.push(createServerGameObjectSyncSystem(this.bootStrap.server, this.world));
+        this.systems.push(createTransformRenderInterpolatorSystem(this.bootStrap.server, serverGameConfig, this.world));
         this.systems.push(createImageSystem(this, serverGameConfig));
         this.systems.push(createCircleSystem(this, serverGameConfig));
         this.systems.push(createMainCameraSystem(this, serverGameConfig));

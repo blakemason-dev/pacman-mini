@@ -17,7 +17,7 @@ export const createPfMiniPacman = (world: IWorld, gos: MapSchema<sGameObject>, x
     gos.set(eid.toString(), new sMiniPacman(x,y));
 
     addComponent(world, P2Body, eid);
-    P2Body.mass[eid] = 5;
+    P2Body.mass[eid] = 0.05;
     P2Body.type[eid] = 1;   // 0 = static, 1 = dynamic, 2 = kinematic
     P2Body.position.x[eid] = x;
     P2Body.position.y[eid] = y;

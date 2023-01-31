@@ -17,7 +17,7 @@ export const createPfPacmanEntity = (world: IWorld, gos: MapSchema<sGameObject>,
     gos.set(eid.toString(), new sPacman(sessionId, x, y));
 
     addComponent(world, P2Body, eid);
-    P2Body.mass[eid] = 5;
+    P2Body.mass[eid] = 5000;
     P2Body.type[eid] = 1;   // 0 = static, 1 = dynamic, 2 = kinematic
     P2Body.position.x[eid] = 0;
     P2Body.position.y[eid] = 7.5;
