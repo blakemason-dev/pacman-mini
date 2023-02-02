@@ -47,6 +47,7 @@ export const createServerGameObjectSyncSystem = (server: GameServerHandler, ecsW
                         Transform.position.y[eid] = (sgo as sMiniPacman).position.y;
                         Transform.rotation[eid] = (sgo as sMiniPacman).angle;
                         Image.tint[eid] = (sgo as sMiniPacman).color;
+                        // console.log(Image.tint[eid]);
                         break;
                     }
                     // case GameObjectType.Background: {

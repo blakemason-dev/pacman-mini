@@ -11,8 +11,9 @@ import { MapSchema } from '@colyseus/schema';
 import { sGameObject } from '../../types/sGameObject';
 import { sMiniPacman } from '../../types/sMiniPacman';
 import { MiniPacmanController } from '../components/MiniPacmanController';
+import { Color } from '../components/Color';
 
-export const createPfMiniPacman = (world: IWorld, gos: MapSchema<sGameObject>, x: number, y: number) => {
+export const createPfMiniPacman = (world: IWorld, gos: MapSchema<sGameObject>, x: number, y: number, color: number = 0xffcc00) => {
     const eid = addEntity(world);
     gos.set(eid.toString(), new sMiniPacman(x,y));
 
@@ -27,6 +28,9 @@ export const createPfMiniPacman = (world: IWorld, gos: MapSchema<sGameObject>, x
     addComponent(world, P2ShapeCircle, eid);
     P2ShapeCircle.radius[eid] = 0.25;
     // need to add offset code
+
+    addComponent(world, Color, eid);
+    Color.hexCode[eid] = color;
 
     // add an NPC movement component here
     addComponent(world, MiniPacmanController, eid);

@@ -15,6 +15,7 @@ import {
 import { GameObjectType, sGameObject } from '../../types/sGameObject';
 import { sMiniPacman } from '../../types/sMiniPacman';
 import { sPacman } from '../../types/sPacman';
+import { Color } from '../components/Color';
 import { GameObjectSync } from '../components/GameObjectSync';
 import { P2Body } from '../components/P2Body';
 
@@ -41,6 +42,7 @@ export const createGameObjectSyncSystem = (gameObjects: MapSchema<sGameObject>) 
                         pacman.position.x = x;
                         pacman.position.y = y;
                         pacman.angle = angle;
+                        pacman.color = Color.hexCode[eid];
                         break;
                     }
                     case GameObjectType.MiniPacman: {
@@ -48,6 +50,7 @@ export const createGameObjectSyncSystem = (gameObjects: MapSchema<sGameObject>) 
                         miniPacman.position.x = x;
                         miniPacman.position.y = y;
                         miniPacman.angle = angle;
+                        miniPacman.color = Color.hexCode[eid];
                         break;
                     }
                     default: {

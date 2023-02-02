@@ -55,7 +55,8 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
         console.log('PacmanMiniRoom: onJoin()' + ' => ' + client.sessionId);
 
         // create player pacman entity
-        createPfClientPacman(this.world, this.state.gameObjects, client.sessionId, 5, 0 );
+        createPfClientPacman(
+            this.world, this.state.gameObjects, client.sessionId, 5, 0, 0x0000ff );
 
         // if we're at max clients start the match
         if (this.clients.length === this.maxClients) {

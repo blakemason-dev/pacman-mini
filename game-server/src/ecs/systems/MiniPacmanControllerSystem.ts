@@ -6,6 +6,7 @@ import {
 } from "bitecs";
 
 import { EventEmitter } from 'events';
+import { Color } from "../components/Color";
 import { MiniPacmanController, MiniPacmanState } from "../components/MiniPacmanController";
 import { P2Body } from "../components/P2Body";
 import { P2ShapeCircle } from "../components/P2ShapeCircle";
@@ -31,12 +32,15 @@ export const createMiniPacmanControllerSystem = (world: IWorld, events: EventEmi
                 MiniPacmanController.eventPortalContact[eid] = 0;
             }
             if (MiniPacmanController.eventPacmanContact[eid]) {
-                console.log('My hero!');
-                MiniPacmanController.state[eid] = MiniPacmanState.Following;
+                // Change pacman state to following and make it same color as its new friend
+                if (MiniPacmanController.state[eid] !== MiniPacmanState.Following) {
+                    MiniPacmanController.state[eid] = MiniPacmanState.Following;
+                    Color.hexCode[eid] = Color.hexCode[MiniPacmanController.followingEid[eid]];
+                }
                 MiniPacmanController.eventPacmanContact[eid] = 0;
             }
 
-            // handle different status
+            // handle different states
             switch (MiniPacmanController.state[eid]) {
                 case MiniPacmanState.Roaming: {
                     MiniPacmanController.roamTimer[eid] -= dt_ms;
