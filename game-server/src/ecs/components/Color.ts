@@ -4,5 +4,5 @@ import {
 } from 'bitecs';
 
 export const Color = defineComponent({
-    hexCode: Types.ui16
+    hexCode: Types.ui32
 });

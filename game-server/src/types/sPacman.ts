@@ -13,7 +13,7 @@ export class sPacman extends sGameObject {
     radius: number = 0.5;
 
     @type('number')
-    color: number = 0x0000ff;
+    color: number = 0xffffff;
 
     constructor(sessionId: string, x: number = 0, y: number = 0) {
         super(GameObjectType.Pacman, sessionId);

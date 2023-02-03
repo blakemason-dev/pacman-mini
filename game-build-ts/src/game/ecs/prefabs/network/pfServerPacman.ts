@@ -24,6 +24,7 @@ export const createPfServerPacman = (world: IWorld, serverEid: number, go: sGame
     Image.origin.y[eid] = 0.5;
     Image.depth[eid] = 1;
     Image.tint[eid] = (go as sPacman).color;
+    console.log(Image.tint[eid]);
 
     addComponent(world, Transform, eid);
     Transform.position.x[eid] = (go as sPacman).position.x;

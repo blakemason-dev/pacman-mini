@@ -68,7 +68,7 @@ export const createClientPacmanControllerSystem = () => {
 
             // random collision check
             if (ClientPacmanController.eventPortal[eid]) {
-                console.log('The Rescue Zone!!');
+                // console.log('The Rescue Zone!!');
                 ClientPacmanController.eventPortal[eid] = 0;
             }
         });

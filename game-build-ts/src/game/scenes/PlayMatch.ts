@@ -1,3 +1,4 @@
+import { MapSchema } from '@colyseus/schema';
 import { 
     createWorld,
     IWorld,
@@ -5,7 +6,8 @@ import {
 
 } from 'bitecs';
 import Phaser from 'phaser';
-import { GameObjectType } from '../../../../game-server/src/types/sGameObject';
+import { iServerGameConfig } from '../../../../game-server/src/types/iServerGameConfig';
+import { GameObjectType, sGameObject } from '../../../../game-server/src/types/sGameObject';
 import { createPfServerCliffArea } from '../ecs/prefabs/network/pfServerCliffArea';
 import { createPfServerMiniPacman } from '../ecs/prefabs/network/pfServerMiniPacman';
 import { createPfServerPacman } from '../ecs/prefabs/network/pfServerPacman';
@@ -42,7 +44,7 @@ export class PlayMatch extends Phaser.Scene {
         console.log('PlayMatch: preload()');
     }
 
-    async create(serverGameConfig: any) {
+    async create(serverGameConfig: iServerGameConfig) {
         console.log('PlayMatch: create()');
 
         // this.add.text(
@@ -61,11 +63,14 @@ export class PlayMatch extends Phaser.Scene {
 
         let playerEid = -1;
 
-        // Create entities based on server game objects
         this.bootStrap.server.room.state.gameObjects.forEach((go, eid) => {
             switch (go.type) {
                 case GameObjectType.Pacman: {
-                    playerEid = createPfServerPacman(this.world, parseInt(eid), go);
+                    if (go.sessionId === this.bootStrap.server.room.sessionId) {
+                        playerEid = createPfServerPacman(this.world, parseInt(eid), go);
+                    } else {
+                        createPfServerPacman(this.world, parseInt(eid), go);
+                    }
                     break;
                 }
                 case GameObjectType.MiniPacman: {
@@ -81,7 +86,6 @@ export class PlayMatch extends Phaser.Scene {
                     break;
                 }
                 case GameObjectType.Portal: {
-                    console.log('creating portal');
                     createPfServerPortal(this.world, go, parseInt(eid));
                     break;
                 }

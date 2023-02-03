@@ -28,7 +28,7 @@ export const createMiniPacmanControllerSystem = (world: IWorld, events: EventEmi
         miniPacmen.map(eid => {
             // handle events
             if (MiniPacmanController.eventPortalContact[eid]) {
-                console.log('Rescued!');
+                // console.log('Rescued!');
                 MiniPacmanController.eventPortalContact[eid] = 0;
             }
             if (MiniPacmanController.eventPacmanContact[eid]) {

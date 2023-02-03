@@ -37,7 +37,7 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
         console.log('PacmanMiniRoom: onCreate()');
 
         // limit number clients
-        this.maxClients = 1;
+        this.maxClients = 2;
 
         this.setState(new PacmanMiniState());
 
@@ -57,7 +57,12 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
 
         // create player pacman entity
         createPfClientPacman(
-            this.world, this.state.gameObjects, client.sessionId, 5, 0, 0x0000ff );
+            this.world, 
+            this.state.gameObjects, 
+            client.sessionId, 
+            this.clients.length === 1 ? ARENA_WIDTH/5 : -ARENA_WIDTH/5, 
+            0, 
+            this.clients.length === 1 ? 0x0000ff : 0xff0000 );
 
         // if we're at max clients start the match
         if (this.clients.length === this.maxClients) {
@@ -101,11 +106,11 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
             height: 10,
             originX: 0.5,
             originY: 0.5,
-            updateFps: UPDATE_FPS,
+            updateFps: UPDATE_FPS
         }
 
         // tell the clients match has been started
-        this.broadcast('start-match', gameConfig); 
+        this.broadcast('start-match', gameConfig, { afterNextPatch: true }); 
     }
 
     stopMatch() {

@@ -1,3 +1,5 @@
+import { iPacmanMiniState } from "./iPacmanMiniState";
+
 export interface iServerGameConfig {
     width: number,
     height: number,

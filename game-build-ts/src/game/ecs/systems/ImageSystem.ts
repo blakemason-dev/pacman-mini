@@ -100,16 +100,19 @@ export const createImageSystem = (scene: Phaser.Scene, serverGameConfig: iServer
                     Image.textureIndex[eid] = AssetLibrary.getIndex('yellow-pacman');
                     const str = AssetLibrary.getKey(Image.textureIndex[eid]);
                     imagesById.get(eid)?.setTexture(str);
+                    break;
                 }
                 case 0xff0000: {
                     Image.textureIndex[eid] = AssetLibrary.getIndex('red-pacman');
                     const str = AssetLibrary.getKey(Image.textureIndex[eid]);
                     imagesById.get(eid)?.setTexture(str);
+                    break;
                 }
                 case 0x0000ff: {
                     Image.textureIndex[eid] = AssetLibrary.getIndex('blue-pacman');
                     const str = AssetLibrary.getKey(Image.textureIndex[eid]);
                     imagesById.get(eid)?.setTexture(str);
+                    break;
                 }
                 default: break;
             }
