@@ -8,6 +8,7 @@ import {
 import Phaser from 'phaser';
 import { iServerGameConfig } from '../../../../game-server/src/types/iServerGameConfig';
 import { GameObjectType, sGameObject } from '../../../../game-server/src/types/sGameObject';
+import { TransformRenderInterpolator } from '../ecs/components/TransformRenderInterpolator';
 import { createPfServerCliffArea } from '../ecs/prefabs/network/pfServerCliffArea';
 import { createPfServerMiniPacman } from '../ecs/prefabs/network/pfServerMiniPacman';
 import { createPfServerPacman } from '../ecs/prefabs/network/pfServerPacman';
@@ -19,15 +20,22 @@ import { createImageSystem } from '../ecs/systems/ImageSystem';
 import { createMainCameraSystem } from '../ecs/systems/MainCameraSystem';
 import { createServerGameObjectSyncSystem } from '../ecs/systems/network/ServerGameObjectSyncSystem';
 import { createTransformRenderInterpolatorSystem } from '../ecs/systems/TransformRenderInterpolatorSystem';
+import { createTRIv2System } from '../ecs/systems/TRIv2System';
 import { ClientInputHandler } from '../services/ClientInputHandler';
 
 import { BootStrap } from './BootStrap';
+
+let playerEid = -1;
 
 export class PlayMatch extends Phaser.Scene {
     private bootStrap!: BootStrap;
     private world!: IWorld;
     private systems: System[] = [];
     private clientInputHandler!: ClientInputHandler;
+
+    private clientTime!: number;
+
+    private fpsText!: Phaser.GameObjects.Text;
 
     constructor() {
         super("play-match");
@@ -47,21 +55,22 @@ export class PlayMatch extends Phaser.Scene {
     async create(serverGameConfig: iServerGameConfig) {
         console.log('PlayMatch: create()');
 
-        // this.add.text(
-        //     this.scale.width * 0.025,
-        //     this.scale.width * 0.025,
-        //     "Scene: PlayMatch",
-        //     {
-        //         fontFamily: 'arial',
-        //         fontSize: '20px',
-        //         color: '#ffffff'
-        //     }
-        // ).setOrigin(0, 0);
+        this.fpsText = this.add.text(
+            this.scale.width * 0.025,
+            this.scale.width * 0.025,
+            "Scene: PlayMatch\nFPS: 0",
+            {
+                fontFamily: 'arial',
+                fontSize: '20px',
+                color: '#ffffff'
+            }
+        ).setOrigin(0, 0);
+        this.fpsText.setScrollFactor(0);
 
         // Create ECS world
         this.world = createWorld();
 
-        let playerEid = -1;
+        // let playerEid = -1;
 
         this.bootStrap.server.room.state.gameObjects.forEach((go, eid) => {
             switch (go.type) {
@@ -100,20 +109,38 @@ export class PlayMatch extends Phaser.Scene {
         this.clientInputHandler = new ClientInputHandler(this, this.bootStrap.server);
         this.clientInputHandler.startListening();
 
+        // set our client time
+        this.clientTime = serverGameConfig.timeStamp;
+
         // Create systems
         this.systems.push(createServerGameObjectSyncSystem(this.bootStrap.server, this.world));
         this.systems.push(createTransformRenderInterpolatorSystem(this.bootStrap.server, serverGameConfig, this.world));
+        this.systems.push(createTRIv2System(this.bootStrap.server, serverGameConfig, this.world));
         this.systems.push(createImageSystem(this, serverGameConfig));
         this.systems.push(createCircleSystem(this, serverGameConfig));
         this.systems.push(createMainCameraSystem(this, serverGameConfig));
     }
 
+    private accum = 0;
+
     update(t: number, dt: number) {
         if (!this.world) return;
+
+        // update client time
+        // this.clientTime += dt;
 
         // run systems
         this.systems.map(system => {
             system(this.world);
         });
+
+        // update fps
+        this.accum += dt;
+        if (this.accum > 200) {
+            this.fpsText.text = "Scene: PlayMatch\nFPS: " + (1000 / dt).toFixed(1);
+            this.accum = 0;
+        }
+
+        // console.log(TransformRenderInterpolator.interp.position.x[playerEid].toFixed(3), TransformRenderInterpolator.interp.position.y[playerEid].toFixed(3));
     }
 }

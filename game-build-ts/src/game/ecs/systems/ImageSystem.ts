@@ -13,6 +13,7 @@ import { Image } from '../components/Image';
 import { PacmanColor } from '../components/PacmanColor';
 import { Transform } from '../components/Transform';
 import { TransformRenderInterpolator } from '../components/TransformRenderInterpolator';
+import { TRIv2 } from '../components/TRIv2';
 
 import * as AssetLibrary from '../libraries/AssetLibrary';
 
@@ -67,6 +68,14 @@ export const createImageSystem = (scene: Phaser.Scene, serverGameConfig: iServer
                 );
                 // update image angle
                 imagesById.get(eid)?.setAngle(ConvertServer.radToPhaserAngle(TransformRenderInterpolator.interp.rotation[eid]));
+            } else if (hasComponent(world, TRIv2, eid)) {
+                // update image position
+                imagesById.get(eid)?.setPosition(
+                    ConvertServer.xToPhaser(TRIv2.render.position.x[eid], serverGameConfig, scene.scale),
+                    ConvertServer.yToPhaser(TRIv2.render.position.y[eid], serverGameConfig, scene.scale)
+                );
+                // update image angle
+                imagesById.get(eid)?.setAngle(ConvertServer.radToPhaserAngle(TRIv2.render.rotation[eid]));
             }
             else {
                 // update image position
@@ -80,7 +89,7 @@ export const createImageSystem = (scene: Phaser.Scene, serverGameConfig: iServer
 
             // ensure tint is up to date
             imagesById.get(eid)?.setTintFill(Image.tint[eid]);
-            
+
         });
 
         // EXIT: Image, Transform

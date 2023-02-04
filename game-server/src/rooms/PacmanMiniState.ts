@@ -9,4 +9,7 @@ export default class PacmanMiniState extends Schema implements iPacmanMiniState 
 
     @type('number')
     status = 0;
+
+    @type('number')
+    serverTime = 0;
 }

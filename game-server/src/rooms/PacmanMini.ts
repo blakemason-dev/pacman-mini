@@ -22,8 +22,8 @@ import { createPfMiniPacman } from "../ecs/prefabs/pfMiniPacman";
 import { createMiniPacmanControllerSystem } from "../ecs/systems/MiniPacmanControllerSystem";
 
 const UPDATE_FPS = 10;
-const ARENA_WIDTH = 20;
-const ARENA_HEIGHT = 20;
+const ARENA_WIDTH = 30;
+const ARENA_HEIGHT = 30;
 const PORTAL_RADIUS = 1.5;
 
 export default class PacmanMiniRoom extends Room<PacmanMiniState> {
@@ -57,12 +57,12 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
 
         // create player pacman entity
         createPfClientPacman(
-            this.world, 
-            this.state.gameObjects, 
-            client.sessionId, 
-            this.clients.length === 1 ? ARENA_WIDTH/5 : -ARENA_WIDTH/5, 
-            0, 
-            this.clients.length === 1 ? 0x0000ff : 0xff0000 );
+            this.world,
+            this.state.gameObjects,
+            client.sessionId,
+            this.clients.length === 1 ? ARENA_WIDTH / 5 : -ARENA_WIDTH / 5,
+            0,
+            this.clients.length === 1 ? 0x0000ff : 0xff0000);
 
         // if we're at max clients start the match
         if (this.clients.length === this.maxClients) {
@@ -85,7 +85,7 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
         this.createMiniPacmen();
 
         // create portal to send mini pacmen home
-        createPfPortal(this.world, this.state.gameObjects, 0, 0, PORTAL_RADIUS, );
+        createPfPortal(this.world, this.state.gameObjects, 0, 0, PORTAL_RADIUS,);
 
         // CREATE SYSTEMS
         this.systems.push(createClientPacmanControllerSystem());
@@ -96,6 +96,7 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
         // set the update interval
         this.setSimulationInterval((dt) => this.update(dt));
         this.setPatchRate(1000 / UPDATE_FPS);
+        // this.setPatchRate(0);
 
         // start listening for client messages
         this.clientMessageHandler.startListening();
@@ -106,11 +107,12 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
             height: 10,
             originX: 0.5,
             originY: 0.5,
-            updateFps: UPDATE_FPS
+            updateFps: UPDATE_FPS,
+            timeStamp: this.state.serverTime
         }
 
         // tell the clients match has been started
-        this.broadcast('start-match', gameConfig, { afterNextPatch: true }); 
+        this.broadcast('start-match', gameConfig, { afterNextPatch: true });
     }
 
     stopMatch() {
@@ -119,10 +121,10 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
 
     createWalls() {
         // create main boundary walls
-        const wallLeftEid = createPfWall(this.world, this.state.gameObjects, -ARENA_WIDTH/2, 0, 1, ARENA_HEIGHT+1);
-        const wallRightEid = createPfWall(this.world, this.state.gameObjects, ARENA_WIDTH/2, 0, 1, ARENA_HEIGHT+1);
-        const wallTopEid = createPfWall(this.world, this.state.gameObjects, 0, ARENA_HEIGHT/2, ARENA_WIDTH+1, 1);
-        const wallBottomEid = createPfWall(this.world, this.state.gameObjects, 0, -ARENA_HEIGHT/2, ARENA_WIDTH+1, 1);
+        const wallLeftEid = createPfWall(this.world, this.state.gameObjects, -ARENA_WIDTH / 2, 0, 1, ARENA_HEIGHT + 1);
+        const wallRightEid = createPfWall(this.world, this.state.gameObjects, ARENA_WIDTH / 2, 0, 1, ARENA_HEIGHT + 1);
+        const wallTopEid = createPfWall(this.world, this.state.gameObjects, 0, ARENA_HEIGHT / 2, ARENA_WIDTH + 1, 1);
+        const wallBottomEid = createPfWall(this.world, this.state.gameObjects, 0, -ARENA_HEIGHT / 2, ARENA_WIDTH + 1, 1);
 
         // generate some random obstacles
         const numObstacles = 10;
@@ -134,15 +136,15 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
             const box = {
                 x: 0,
                 y: 0,
-                width: Math.random() * (BOX_DIM_MAX/2 - BOX_DIM_MIN/2) + BOX_DIM_MIN/2,
-                height: Math.random() * (BOX_DIM_MAX/2 - BOX_DIM_MIN/2) + BOX_DIM_MIN/2,
+                width: Math.random() * (BOX_DIM_MAX / 2 - BOX_DIM_MIN / 2) + BOX_DIM_MIN / 2,
+                height: Math.random() * (BOX_DIM_MAX / 2 - BOX_DIM_MIN / 2) + BOX_DIM_MIN / 2,
             }
 
             // find suitable postion between portal and walls
-            box.x = Math.random() * ((ARENA_WIDTH/2-box.width/2) - (PORTAL_RADIUS+box.width/2)) + (PORTAL_RADIUS+box.width/2);
-            box.y = Math.random() * ((ARENA_HEIGHT/2-box.height/2) - (PORTAL_RADIUS+box.height/2)) + (PORTAL_RADIUS+box.height/2);
+            box.x = Math.random() * ((ARENA_WIDTH / 2 - box.width / 2) - (PORTAL_RADIUS + box.width / 2)) + (PORTAL_RADIUS + box.width / 2);
+            box.y = Math.random() * ((ARENA_HEIGHT / 2 - box.height / 2) - (PORTAL_RADIUS + box.height / 2)) + (PORTAL_RADIUS + box.height / 2);
             if (Math.random() >= 0.5) box.x = -box.x;
-            if (Math.random() >= 0.5) box.y = -box.y; 
+            if (Math.random() >= 0.5) box.y = -box.y;
 
             // create wall
             createPfWall(this.world, this.state.gameObjects, box.x, box.y, box.width, box.height);
@@ -153,11 +155,14 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
         const NUM_MINIS = 25;
 
         for (let i = 0; i < NUM_MINIS; i++) {
-            const x = Math.random() * (ARENA_WIDTH*0.9/2 - -ARENA_WIDTH*0.9/2) + -ARENA_WIDTH*0.9/2;
-            const y = Math.random() * (ARENA_HEIGHT*0.9/2 - -ARENA_HEIGHT*0.9/2) + -ARENA_HEIGHT*0.9/2;
+            const x = Math.random() * (ARENA_WIDTH * 0.9 / 2 - -ARENA_WIDTH * 0.9 / 2) + -ARENA_WIDTH * 0.9 / 2;
+            const y = Math.random() * (ARENA_HEIGHT * 0.9 / 2 - -ARENA_HEIGHT * 0.9 / 2) + -ARENA_HEIGHT * 0.9 / 2;
             createPfMiniPacman(this.world, this.state.gameObjects, x, y);
         }
     }
+
+    private accum = 1000 / UPDATE_FPS;
+    private prev_ms = Date.now();
 
     update(dt: number) {
         if (!this.world) return;
@@ -166,5 +171,7 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
         this.systems.map(system => {
             system(this.world);
         });
+
+        this.state.serverTime += dt;
     }
 }

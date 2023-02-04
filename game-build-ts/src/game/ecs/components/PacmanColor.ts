@@ -4,5 +4,5 @@ import {
 } from 'bitecs';
 
 export const PacmanColor = defineComponent({
-
+   
 });

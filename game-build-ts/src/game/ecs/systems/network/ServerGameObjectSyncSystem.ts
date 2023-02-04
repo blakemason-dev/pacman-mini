@@ -9,6 +9,7 @@ import {
 import { GameObjectType } from '../../../../../../game-server/src/types/sGameObject';
 import { sPacman } from '../../../../../../game-server/src/types/sPacman';
 import { sBackground } from '../../../../../../game-server/src/types/sBackground';
+import { iPacmanMiniState } from '../../../../../../game-server/src/types/iPacmanMiniState';
 import GameServerHandler from '../../../services/GameServerHandler';
 import { ServerGameObjectSync } from '../../components/network/ServerGameObjectSync';
 import { Transform } from '../../components/Transform';
@@ -28,6 +29,7 @@ export const createServerGameObjectSyncSystem = (server: GameServerHandler, ecsW
     // create one off listeners
     const eids = syncerQuery(ecsWorld);
     events.on('state-changed', state => {
+    // events.on('update-game-state', (state: iPacmanMiniState) => {
         eids.map(eid => {
             const sgoEid = ServerGameObjectSync.serverEid[eid];
             const sgo = state.gameObjects.get(sgoEid.toString());

@@ -5,5 +5,6 @@ export interface iServerGameConfig {
     height: number,
     originX: number,
     originY: number,
-    updateFps: number
+    updateFps: number,
+    timeStamp: number,
 }

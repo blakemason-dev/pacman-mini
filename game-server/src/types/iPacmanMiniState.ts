@@ -10,4 +10,5 @@ export enum PacmanMiniRoomStatus {
 export interface iPacmanMiniState {
     gameObjects: MapSchema<sGameObject>;
     status: number;
+    serverTime: number;
 }

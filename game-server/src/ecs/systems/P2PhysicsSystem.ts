@@ -139,22 +139,22 @@ export const createP2PhysicsSystem = (events: EventEmitter) => {
         bodiesQuery.map(eid => {
             const bod = p2BodiesById.get(eid);
             if (bod) {
-                bod.position = [P2Body.position.x[eid], P2Body.position.y[eid]];
+                // bod.position = [P2Body.position.x[eid], P2Body.position.y[eid]];
                 bod.velocity = [P2Body.velocity.x[eid], P2Body.velocity.y[eid]];
                 bod.angle = P2Body.angle[eid];
             }
         });
 
         // 2) step the physics world
-        p2World.step(dt / 1000, FIXED_TIME_STEP, 10);
+        p2World.step(FIXED_TIME_STEP, dt/1000, 10);
 
         // 3) apply new physics states to P2Bodies
         const p2Bodies = p2BodyQuery(ecsWorld);
         p2Bodies.map(eid => {
             const bod = p2BodiesById.get(eid);
             if (bod) {
-                P2Body.position.x[eid] = bod.position[0];
-                P2Body.position.y[eid] = bod.position[1];
+                P2Body.position.x[eid] = bod.interpolatedPosition[0];
+                P2Body.position.y[eid] = bod.interpolatedPosition[1];
                 P2Body.angle[eid] = bod.angle;
                 bod.angularVelocity = 0;
             }

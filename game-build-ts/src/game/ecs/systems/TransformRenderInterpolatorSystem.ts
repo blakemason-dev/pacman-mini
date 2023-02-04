@@ -32,8 +32,13 @@ export const createTransformRenderInterpolatorSystem = (server: GameServerHandle
     const room = server.room;
     const events = server.events;
 
+    // for time keeping
+    let previous_ms = Date.now();
+    let prev_ms = Date.now();
+
     // create one off listeners
     events.on('state-changed', state => {
+    // events.on('update-game-state', state => {
         const eids = interpQuery(ecsWorld);
         eids.map(eid => {
             if (hasComponent(ecsWorld, TransformRenderInterpolator, eid)) {
@@ -47,11 +52,14 @@ export const createTransformRenderInterpolatorSystem = (server: GameServerHandle
         
                 TransformRenderInterpolator.accum[eid] = 0;
             }
-        })
+        });
+
+        const current_ms = Date.now();
+        const dt_ms = current_ms - prev_ms;
+        prev_ms = current_ms;
+        // console.log(dt_ms);
     });
 
-    // for time keeping
-    let previous_ms = Date.now();
     
     // define the system
     return defineSystem((world: IWorld) => {
@@ -61,6 +69,7 @@ export const createTransformRenderInterpolatorSystem = (server: GameServerHandle
         const dt_ms = current_ms - previous_ms;
         previous_ms = current_ms;
 
+        // ENTER
         const enterInterps = interpQueryEnter(world);
         enterInterps.map(eid => {
             TransformRenderInterpolator.previous.position.x[eid] = Transform.position.x[eid];
@@ -72,12 +81,19 @@ export const createTransformRenderInterpolatorSystem = (server: GameServerHandle
             TransformRenderInterpolator.current.rotation[eid] = Transform.rotation[eid];
         });
 
+        // UPDATE
         const interps = interpQuery(world); 
+        let printedOne = false;
         interps.map(eid => {
 
             TransformRenderInterpolator.accum[eid] += dt_ms;
             let interp = TransformRenderInterpolator.accum[eid] / (1000 / serverGameConfig.updateFps);
             if (interp > 1) interp = 1;
+
+            if (!printedOne) {
+                // console.log(interp);
+                printedOne = true;
+            }
 
             TransformRenderInterpolator.interp.position.x[eid] = TransformRenderInterpolator.previous.position.x[eid] + interp * (TransformRenderInterpolator.current.position.x[eid] - TransformRenderInterpolator.previous.position.x[eid]);
             TransformRenderInterpolator.interp.position.y[eid] = TransformRenderInterpolator.previous.position.y[eid] + interp * (TransformRenderInterpolator.current.position.y[eid] - TransformRenderInterpolator.previous.position.y[eid]);

@@ -31,7 +31,6 @@ export const createPfClientPacman = (world: IWorld, gos: MapSchema<sGameObject>,
 
     addComponent(world, Color, eid);
     Color.hexCode[eid] = color;
-    console.log(Color.hexCode[eid]);
 
     addComponent(world, ClientPacmanController, eid);
 
