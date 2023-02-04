@@ -10,8 +10,8 @@ import {
 } from 'bitecs';
 import { iServerGameConfig } from '../../../../../game-server/src/types/iServerGameConfig';
 import { MainCamera } from '../components/MainCamera';
+import { SnapshotInterpolation } from '../components/SnapshotInterpolation';
 import { Transform } from '../components/Transform';
-import { TransformRenderInterpolator } from '../components/TransformRenderInterpolator';
 import * as ConvertServer from '../utilities/ConvertServer';
 
 export const createMainCameraSystem = (scene: Phaser.Scene, serverGameConfig: iServerGameConfig) => {
@@ -31,9 +31,16 @@ export const createMainCameraSystem = (scene: Phaser.Scene, serverGameConfig: iS
             let deltaX = 0;
             let deltaY = 0;
 
-            if (hasComponent(world, TransformRenderInterpolator, followEid)) {
-                deltaX = TransformRenderInterpolator.interp.position.x[followEid] - Transform.position.x[eid];
-                deltaY = TransformRenderInterpolator.interp.position.y[followEid] - Transform.position.y[eid];
+            // if (hasComponent(world, TransformRenderInterpolator, followEid)) {
+            //     deltaX = TransformRenderInterpolator.interp.position.x[followEid] - Transform.position.x[eid];
+            //     deltaY = TransformRenderInterpolator.interp.position.y[followEid] - Transform.position.y[eid];
+            // } else {
+            //     deltaX = Transform.position.x[MainCamera.followEntity[eid]] - Transform.position.x[eid];
+            //     deltaY = Transform.position.y[MainCamera.followEntity[eid]] - Transform.position.y[eid];
+            // }
+            if (hasComponent(world, SnapshotInterpolation, followEid)) {
+                deltaX = SnapshotInterpolation.render.position.x[followEid] - Transform.position.x[eid];
+                deltaY = SnapshotInterpolation.render.position.y[followEid] - Transform.position.y[eid];
             } else {
                 deltaX = Transform.position.x[MainCamera.followEntity[eid]] - Transform.position.x[eid];
                 deltaY = Transform.position.y[MainCamera.followEntity[eid]] - Transform.position.y[eid];

@@ -37,7 +37,7 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
         console.log('PacmanMiniRoom: onCreate()');
 
         // limit number clients
-        this.maxClients = 2;
+        this.maxClients = 1;
 
         this.setState(new PacmanMiniState());
 

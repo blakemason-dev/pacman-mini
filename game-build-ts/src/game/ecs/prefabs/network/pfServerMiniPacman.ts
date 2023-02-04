@@ -8,10 +8,10 @@ import * as AssetLibrary from '../../libraries/AssetLibrary';
 import { Image } from '../../components/Image';
 import { Transform } from '../../components/Transform';
 import { ServerGameObjectSync } from '../../components/network/ServerGameObjectSync';
-import { TransformRenderInterpolator } from '../../components/TransformRenderInterpolator';
 import { sGameObject } from '../../../../../../game-server/src/types/sGameObject';
 import { sMiniPacman } from '../../../../../../game-server/src/types/sMiniPacman';
 import { PacmanColor } from '../../components/PacmanColor';
+import { SnapshotInterpolation } from '../../components/SnapshotInterpolation';
 
 export const createPfServerMiniPacman = (world: IWorld, serverEid: number, go: sGameObject) => {
     const eid = addEntity(world);
@@ -32,7 +32,7 @@ export const createPfServerMiniPacman = (world: IWorld, serverEid: number, go: s
     addComponent(world, ServerGameObjectSync, eid);
     ServerGameObjectSync.serverEid[eid] = serverEid;
 
-    addComponent(world, TransformRenderInterpolator, eid);
+    addComponent(world, SnapshotInterpolation, eid);
 
     addComponent(world, PacmanColor, eid);
 

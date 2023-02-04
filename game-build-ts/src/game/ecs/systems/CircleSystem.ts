@@ -10,8 +10,8 @@ import {
 } from 'bitecs';
 import { iServerGameConfig } from '../../../../../game-server/src/types/iServerGameConfig';
 import { Circle } from '../components/Circle';
+import { SnapshotInterpolation } from '../components/SnapshotInterpolation';
 import { Transform } from '../components/Transform';
-import { TransformRenderInterpolator } from '../components/TransformRenderInterpolator';
 
 import * as AssetLibrary from '../libraries/AssetLibrary';
 
@@ -59,14 +59,14 @@ export const createCircleSystem = (scene: Phaser.Scene, serverGameConfig: iServe
             );
 
             // check if has interpolator
-            if (hasComponent(world, TransformRenderInterpolator, eid)) {
+            if (hasComponent(world, SnapshotInterpolation, eid)) {
                 // update image position
                 circlesById.get(eid)?.setPosition(
-                    ConvertServer.xToPhaser(TransformRenderInterpolator.interp.position.x[eid], serverGameConfig, scene.scale),
-                    ConvertServer.yToPhaser(TransformRenderInterpolator.interp.position.y[eid], serverGameConfig, scene.scale)
+                    ConvertServer.xToPhaser(SnapshotInterpolation.render.position.x[eid], serverGameConfig, scene.scale),
+                    ConvertServer.yToPhaser(SnapshotInterpolation.render.position.y[eid], serverGameConfig, scene.scale)
                 );
                 // update image angle
-                circlesById.get(eid)?.setAngle(ConvertServer.radToPhaserAngle(TransformRenderInterpolator.interp.rotation[eid]));
+                circlesById.get(eid)?.setAngle(ConvertServer.radToPhaserAngle(SnapshotInterpolation.render.rotation[eid]));
             }
             else {
                 // update image position

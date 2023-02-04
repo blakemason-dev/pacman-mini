@@ -8,7 +8,6 @@ import {
 import Phaser from 'phaser';
 import { iServerGameConfig } from '../../../../game-server/src/types/iServerGameConfig';
 import { GameObjectType, sGameObject } from '../../../../game-server/src/types/sGameObject';
-import { TransformRenderInterpolator } from '../ecs/components/TransformRenderInterpolator';
 import { createPfServerCliffArea } from '../ecs/prefabs/network/pfServerCliffArea';
 import { createPfServerMiniPacman } from '../ecs/prefabs/network/pfServerMiniPacman';
 import { createPfServerPacman } from '../ecs/prefabs/network/pfServerPacman';
@@ -19,8 +18,7 @@ import { createCircleSystem } from '../ecs/systems/CircleSystem';
 import { createImageSystem } from '../ecs/systems/ImageSystem';
 import { createMainCameraSystem } from '../ecs/systems/MainCameraSystem';
 import { createServerGameObjectSyncSystem } from '../ecs/systems/network/ServerGameObjectSyncSystem';
-import { createTransformRenderInterpolatorSystem } from '../ecs/systems/TransformRenderInterpolatorSystem';
-import { createTRIv2System } from '../ecs/systems/TRIv2System';
+import { createSnapshotInterpolationSystem } from '../ecs/systems/SnapshotInterpolationSystem';
 import { ClientInputHandler } from '../services/ClientInputHandler';
 
 import { BootStrap } from './BootStrap';
@@ -69,9 +67,8 @@ export class PlayMatch extends Phaser.Scene {
 
         // Create ECS world
         this.world = createWorld();
-
-        // let playerEid = -1;
-
+        
+        // Create entities based on server types in state
         this.bootStrap.server.room.state.gameObjects.forEach((go, eid) => {
             switch (go.type) {
                 case GameObjectType.Pacman: {
@@ -112,10 +109,16 @@ export class PlayMatch extends Phaser.Scene {
         // set our client time
         this.clientTime = serverGameConfig.timeStamp;
 
-        // Create systems
+        // CREATE SYSTEMS
+        // 1. server info systems
         this.systems.push(createServerGameObjectSyncSystem(this.bootStrap.server, this.world));
-        this.systems.push(createTransformRenderInterpolatorSystem(this.bootStrap.server, serverGameConfig, this.world));
-        this.systems.push(createTRIv2System(this.bootStrap.server, serverGameConfig, this.world));
+
+        // 2. input processing systems
+
+        // 3a. render interpolation systems
+        this.systems.push(createSnapshotInterpolationSystem(this.bootStrap.server, serverGameConfig, this.world));
+
+        // 3b. render systems
         this.systems.push(createImageSystem(this, serverGameConfig));
         this.systems.push(createCircleSystem(this, serverGameConfig));
         this.systems.push(createMainCameraSystem(this, serverGameConfig));
@@ -125,9 +128,6 @@ export class PlayMatch extends Phaser.Scene {
 
     update(t: number, dt: number) {
         if (!this.world) return;
-
-        // update client time
-        // this.clientTime += dt;
 
         // run systems
         this.systems.map(system => {
@@ -140,7 +140,5 @@ export class PlayMatch extends Phaser.Scene {
             this.fpsText.text = "Scene: PlayMatch\nFPS: " + (1000 / dt).toFixed(1);
             this.accum = 0;
         }
-
-        // console.log(TransformRenderInterpolator.interp.position.x[playerEid].toFixed(3), TransformRenderInterpolator.interp.position.y[playerEid].toFixed(3));
     }
 }

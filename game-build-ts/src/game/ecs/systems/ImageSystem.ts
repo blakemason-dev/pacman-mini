@@ -11,9 +11,8 @@ import {
 import { iServerGameConfig } from '../../../../../game-server/src/types/iServerGameConfig';
 import { Image } from '../components/Image';
 import { PacmanColor } from '../components/PacmanColor';
+import { SnapshotInterpolation } from '../components/SnapshotInterpolation';
 import { Transform } from '../components/Transform';
-import { TransformRenderInterpolator } from '../components/TransformRenderInterpolator';
-import { TRIv2 } from '../components/TRIv2';
 
 import * as AssetLibrary from '../libraries/AssetLibrary';
 
@@ -60,22 +59,23 @@ export const createImageSystem = (scene: Phaser.Scene, serverGameConfig: iServer
             );
 
             // check if has interpolator
-            if (hasComponent(world, TransformRenderInterpolator, eid)) {
+            // if (hasComponent(world, TransformRenderInterpolator, eid)) {
+            //     // update image position
+            //     imagesById.get(eid)?.setPosition(
+            //         ConvertServer.xToPhaser(TransformRenderInterpolator.interp.position.x[eid], serverGameConfig, scene.scale),
+            //         ConvertServer.yToPhaser(TransformRenderInterpolator.interp.position.y[eid], serverGameConfig, scene.scale)
+            //     );
+            //     // update image angle
+            //     imagesById.get(eid)?.setAngle(ConvertServer.radToPhaserAngle(TransformRenderInterpolator.interp.rotation[eid]));
+            // } 
+            if (hasComponent(world, SnapshotInterpolation, eid)) {
                 // update image position
                 imagesById.get(eid)?.setPosition(
-                    ConvertServer.xToPhaser(TransformRenderInterpolator.interp.position.x[eid], serverGameConfig, scene.scale),
-                    ConvertServer.yToPhaser(TransformRenderInterpolator.interp.position.y[eid], serverGameConfig, scene.scale)
+                    ConvertServer.xToPhaser(SnapshotInterpolation.render.position.x[eid], serverGameConfig, scene.scale),
+                    ConvertServer.yToPhaser(SnapshotInterpolation.render.position.y[eid], serverGameConfig, scene.scale)
                 );
                 // update image angle
-                imagesById.get(eid)?.setAngle(ConvertServer.radToPhaserAngle(TransformRenderInterpolator.interp.rotation[eid]));
-            } else if (hasComponent(world, TRIv2, eid)) {
-                // update image position
-                imagesById.get(eid)?.setPosition(
-                    ConvertServer.xToPhaser(TRIv2.render.position.x[eid], serverGameConfig, scene.scale),
-                    ConvertServer.yToPhaser(TRIv2.render.position.y[eid], serverGameConfig, scene.scale)
-                );
-                // update image angle
-                imagesById.get(eid)?.setAngle(ConvertServer.radToPhaserAngle(TRIv2.render.rotation[eid]));
+                imagesById.get(eid)?.setAngle(ConvertServer.radToPhaserAngle(SnapshotInterpolation.render.rotation[eid]));
             }
             else {
                 // update image position
