@@ -24,12 +24,12 @@ export default class GameServerHandler {
     
         this.room.onStateChange(state => {
             this.events.emit("state-changed", state, state.serverTime);
-            // console.log(state.serverTime);
         });
 
         this.room.state.gameObjects.onRemove = (player, key) => {
             if (player.type === GameObjectType.MiniPacman) {
                 console.log('Mini pacman saved!');
+                console.log(key);
             }
         };
 
