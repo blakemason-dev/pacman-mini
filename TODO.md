@@ -1,15 +1,17 @@
 # To Do
 
 - add scoreboard
-- prevent minis from being stolen (only lunges should break them off)
-- add mini pacman generator
-- add lunge attack
+- make mini's portal when in players colour
 - ensure no state can be changed from client side
 - prevent "trying to encode "NaN" in sVector2#x" error
+- fix/minimize occassional SnapshotInterpolation glitch
 - fix 'webgl context was lost' error so i can use WEBGL and tints
 - optimize the texture switch code so it doesn't update every loop for pacmen
 - Make the screen coordinate converter a bit more generic (should really 
 be something called by the client in case we build something without a server)
+- ~~prevent minis from being stolen (only lunges should break them off)~~
+- ~~add mini pacman generator~~
+- ~~add lunge attack~~
 - ~~add player 2~~
 - ~~prevent obstacles from generating over the portal~~
 - ~~prevent obstacles generating out of bounds~~

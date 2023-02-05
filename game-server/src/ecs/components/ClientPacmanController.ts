@@ -18,6 +18,9 @@ export const ClientPacmanController = defineComponent({
     eventDash: Types.ui8,
     eventPortal: Types.ui8,
 
+    eventPacmanContact: Types.ui8,
+    eventPacmanContactEid: Types.ui8,
+
     // state
     state: Types.ui16,
 
@@ -28,8 +31,10 @@ export const ClientPacmanController = defineComponent({
         y: Types.f32,
     },
     dashSpeed: Types.f32,
-    // dashPositionFinal: {
-    //     x: Types.f32,
-    //     y: Types.f32
-    // }
+
+    // knocked vars
+    knockedTIme: Types.f32,
+
+    // score
+    score: Types.ui8
 });

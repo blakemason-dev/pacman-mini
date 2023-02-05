@@ -1,3 +1,4 @@
+import { MapSchema } from "@colyseus/schema";
 import { 
     defineSystem,
     IWorld,
@@ -6,12 +7,15 @@ import {
 } from "bitecs";
 
 import { EventEmitter } from 'events';
+import { sGameObject } from "../../types/sGameObject";
+import { ClientPacmanController, ClientPacmanState } from "../components/ClientPacmanController";
 import { Color } from "../components/Color";
 import { MiniPacmanController, MiniPacmanState } from "../components/MiniPacmanController";
 import { P2Body } from "../components/P2Body";
 import { P2ShapeCircle } from "../components/P2ShapeCircle";
+import { destroyPfMiniPacman } from "../prefabs/pfMiniPacman";
 
-export const createMiniPacmanControllerSystem = (world: IWorld, events: EventEmitter) => {
+export const createMiniPacmanControllerSystem = (world: IWorld, events: EventEmitter, gos: MapSchema<sGameObject>) => {
 
     const miniPacmenQuery = defineQuery([MiniPacmanController]);
 
@@ -26,16 +30,26 @@ export const createMiniPacmanControllerSystem = (world: IWorld, events: EventEmi
         // UPDATES
         const miniPacmen = miniPacmenQuery(ecsWorld);
         miniPacmen.map(eid => {
+            // destroy
+            if (MiniPacmanController.destroy[eid]) {
+                destroyPfMiniPacman(ecsWorld, eid, gos);
+            }
+
             // handle events
             if (MiniPacmanController.eventPortalContact[eid]) {
                 // console.log('Rescued!');
+                if (MiniPacmanController.state[eid] === MiniPacmanState.Following) {
+                    rescue(eid);
+                }
                 MiniPacmanController.eventPortalContact[eid] = 0;
             }
             if (MiniPacmanController.eventPacmanContact[eid]) {
                 // Change pacman state to following and make it same color as its new friend
-                if (MiniPacmanController.state[eid] !== MiniPacmanState.Following) {
+                const contactEid = MiniPacmanController.eventPacmanContactEid[eid];
+                if (MiniPacmanController.state[eid] !== MiniPacmanState.Following && ClientPacmanController.state[contactEid] !== ClientPacmanState.Knocked) {
                     MiniPacmanController.state[eid] = MiniPacmanState.Following;
-                    Color.hexCode[eid] = Color.hexCode[MiniPacmanController.followingEid[eid]];
+                    MiniPacmanController.followingEid[eid] = contactEid;
+                    Color.hexCode[eid] = Color.hexCode[contactEid];
                 }
                 MiniPacmanController.eventPacmanContact[eid] = 0;
             }
@@ -62,15 +76,21 @@ export const createMiniPacmanControllerSystem = (world: IWorld, events: EventEmi
                 }
                 case MiniPacmanState.Following: {
                     const followingEid = MiniPacmanController.followingEid[eid];
-                    let distX = P2Body.position.x[followingEid] - P2Body.position.x[eid];
-                    let distY = P2Body.position.y[followingEid] - P2Body.position.y[eid];
-
-                    P2Body.velocity.x[eid] = distX;
-                    P2Body.velocity.y[eid] = distY;
-
-                    // also calc a new angle while here
-                    const angle = Math.atan2(P2Body.velocity.y[eid], P2Body.velocity.x[eid]);
-                    P2Body.angle[eid] = angle;
+                    // if the pacman we are following gets knocked we need to free roam again
+                    if (ClientPacmanController.state[followingEid] === ClientPacmanState.Knocked) {
+                        MiniPacmanController.state[eid] = MiniPacmanState.Roaming;
+                        Color.hexCode[eid] = 0xffcc00;
+                    } else { // our leader isn't knocked so follow them
+                        let distX = P2Body.position.x[followingEid] - P2Body.position.x[eid];
+                        let distY = P2Body.position.y[followingEid] - P2Body.position.y[eid];
+                        
+                        P2Body.velocity.x[eid] = distX*2;
+                        P2Body.velocity.y[eid] = distY*2;
+                        
+                        // also calc a new angle while here
+                        const angle = Math.atan2(P2Body.velocity.y[eid], P2Body.velocity.x[eid]);
+                        P2Body.angle[eid] = angle;
+                    }
                 }
                 default: break;
             }
@@ -78,4 +98,10 @@ export const createMiniPacmanControllerSystem = (world: IWorld, events: EventEmi
 
         return ecsWorld;
     });
+}
+
+const rescue = (eid: number) => {
+    const leaderEid = MiniPacmanController.followingEid[eid];
+    ClientPacmanController.score[leaderEid] += 1;
+    MiniPacmanController.destroy[eid] = 1;
 }

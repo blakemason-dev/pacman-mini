@@ -15,6 +15,9 @@ export class sPacman extends sGameObject {
     @type('number')
     color: number = 0xffffff;
 
+    @type('number')
+    score: number = 0;
+
     constructor(sessionId: string, x: number = 0, y: number = 0) {
         super(GameObjectType.Pacman, sessionId);
         this.position.x = x;

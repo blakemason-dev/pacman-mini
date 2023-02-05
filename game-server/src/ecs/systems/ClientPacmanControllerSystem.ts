@@ -28,6 +28,12 @@ export const createClientPacmanControllerSystem = () => {
 
         const pacmen = pacmanQuery(ecsWorld);
         pacmen.map(eid => {
+            // check events
+            if (ClientPacmanController.eventPacmanContact[eid]) {
+                handlePacmanContact(eid);
+                ClientPacmanController.eventPacmanContact[eid] = 0;
+            }
+
             // check states
             switch (ClientPacmanController.state[eid]) {
                 case ClientPacmanState.Roaming: {
@@ -39,7 +45,7 @@ export const createClientPacmanControllerSystem = () => {
                     break;
                 }
                 case ClientPacmanState.Knocked: {
-
+                    handleKnocked(eid, dt_ms);
                     break;
                 }
                 default: break;
@@ -47,7 +53,7 @@ export const createClientPacmanControllerSystem = () => {
         });
 
         return ecsWorld;
-    })
+    });
 }
 
 const handleRoaming = (eid: number) => {
@@ -74,10 +80,10 @@ const handleRoaming = (eid: number) => {
     if (Math.abs(velX) > 0 || Math.abs(velY) > 0) {
         // grab vector length so we can normalize
         length = Math.sqrt(velX ** 2 + velY ** 2);
-        
+
         // also calc a new angle while here
         angle = Math.atan2(velY, velX);
-        
+
         // see if dash was pushed
         if (ClientPacmanController.eventDash[eid]) {
             ClientPacmanController.state[eid] = ClientPacmanState.Dashing;
@@ -107,8 +113,32 @@ const handleRoaming = (eid: number) => {
 }
 
 const handleDashing = (eid: number, dt_ms: number) => {
-    ClientPacmanController.dashTime[eid] -= dt_ms*0.001;
+    ClientPacmanController.dashTime[eid] -= dt_ms * 0.001;
     if (ClientPacmanController.dashTime[eid] <= 0) {
         ClientPacmanController.state[eid] = ClientPacmanState.Roaming;
+    }
+}
+
+const handleKnocked = (eid: number, dt_ms: number) => {
+    ClientPacmanController.knockedTIme[eid] -= dt_ms * 0.001;
+    if (ClientPacmanController.knockedTIme[eid] <= 0) {
+        ClientPacmanController.state[eid] = ClientPacmanState.Roaming;
+    }
+}
+
+const handlePacmanContact = (eid: number) => {
+    // if the other pacman was dashing we need to go into knocked state
+    const otherEid = ClientPacmanController.eventPacmanContactEid[eid];
+    if (ClientPacmanController.state[otherEid] === ClientPacmanState.Dashing && ClientPacmanController.state[eid] !== ClientPacmanState.Dashing) {
+        ClientPacmanController.state[eid] = ClientPacmanState.Knocked;
+        let x = P2Body.position.x[otherEid] - P2Body.position.x[eid];
+        let y = P2Body.position.y[otherEid] - P2Body.position.y[eid];
+        let l = Math.sqrt(x ** 2 + y ** 2);
+        x /= l;
+        y /= l;
+        P2Body.applyForce.x[eid] = x * 5000;
+        P2Body.applyForce.y[eid] = y * 5000;
+        P2Body.applyForce.activate[eid] = 1;
+        ClientPacmanController.knockedTIme[eid] = 1;
     }
 }

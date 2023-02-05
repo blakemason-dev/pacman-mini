@@ -15,6 +15,8 @@ import { P2Body } from '../components/P2Body';
 import { P2ShapeBox } from '../components/P2ShapeBox';
 import { P2ShapeCircle } from '../components/P2ShapeCircle';
 import { EventEmitter } from 'events';
+import { ClientPacmanController, ClientPacmanState } from '../components/ClientPacmanController';
+import { MiniPacmanController } from '../components/MiniPacmanController';
 
 export const createP2PhysicsSystem = (events: EventEmitter) => {
     // create our physics world
@@ -43,10 +45,6 @@ export const createP2PhysicsSystem = (events: EventEmitter) => {
     const p2ShapeBoxQuery = defineQuery([P2Body, P2ShapeBox]);
     const p2ShapeBoxQueryEnter = enterQuery(p2ShapeBoxQuery);
 
-    // body movement queries
-    // const clientMoveBodyQuery = defineQuery([P2Body]);
-    // const clientMoveBodyQuery = defineQuery([P2Body, ClientMovement]);
-
     // handle contact events
     p2World.on('beginContact', (data: { shapeA: p2.Shape, shapeB: p2.Shape, bodyA: p2.Body, bodyB: p2.Body }) => {
         let eids: number[] = [];
@@ -59,6 +57,19 @@ export const createP2PhysicsSystem = (events: EventEmitter) => {
 
         events.emit('beginEntityContact', eids);
     });
+
+    // p2World.emitImpactEvent = true;
+    // p2World.on('impact', (data: { shapeA: p2.Shape, shapeB: p2.Shape, bodyA: p2.Body, bodyB: p2.Body }) => {
+    //     let eids: number[] = [];
+
+    //     p2BodiesById.forEach((val, key, map) => {
+    //         if (val.id === data.bodyA.id || val.id === data.bodyB.id) {
+    //             eids.push(key);
+    //         }
+    //     });
+
+    //     events.emit('impact', eids);
+    // });
 
 
     const FIXED_TIME_STEP = 1 / 20;
@@ -139,9 +150,25 @@ export const createP2PhysicsSystem = (events: EventEmitter) => {
         bodiesQuery.map(eid => {
             const bod = p2BodiesById.get(eid);
             if (bod) {
-                // bod.position = [P2Body.position.x[eid], P2Body.position.y[eid]];
-                bod.velocity = [P2Body.velocity.x[eid], P2Body.velocity.y[eid]];
-                bod.angle = P2Body.angle[eid];
+                // bod.applyForce([10000,10000], [P2Body.position.x[eid],P2Body.position.y[eid]]);
+
+                if (hasComponent(ecsWorld, ClientPacmanController, eid)) {
+                    if (ClientPacmanController.state[eid] !== ClientPacmanState.Knocked) {
+                        // bod.position = [P2Body.position.x[eid], P2Body.position.y[eid]];
+                        bod.velocity = [P2Body.velocity.x[eid], P2Body.velocity.y[eid]];
+                        bod.angle = P2Body.angle[eid];
+                    } else if (ClientPacmanController.state[eid] === ClientPacmanState.Knocked) {
+                        // apply any forces (LINEAR FORCE ONLY APPLIED AT BODY CENTRE)
+                        if (P2Body.applyForce.activate[eid]) {
+                            bod.applyForce([P2Body.applyForce.x[eid], P2Body.applyForce.y[eid]], [P2Body.position.x[eid], P2Body.position.y[eid]]);
+                            P2Body.applyForce.activate[eid] = 0;
+                        }
+                    }
+                } else if (hasComponent(ecsWorld, MiniPacmanController, eid)) {
+                    // bod.position = [P2Body.position.x[eid], P2Body.position.y[eid]];
+                    bod.velocity = [P2Body.velocity.x[eid], P2Body.velocity.y[eid]];
+                    bod.angle = P2Body.angle[eid];
+                }
             }
         });
 
@@ -161,7 +188,24 @@ export const createP2PhysicsSystem = (events: EventEmitter) => {
         });
 
         // EXIT
+        const bodiesExit = p2BodyQueryExit(ecsWorld);
+        bodiesExit.map(eid => {
+            const bod = p2BodiesById.get(eid);
+            if (bod) {
+                bod.shapes.map(shp => {
+                    bod.removeShape(shp);
+                });
+                p2World.removeBody(bod);
+                p2BodiesById.delete(eid);
+                console.log(eid, ": P2Body deleted");
+            }
+        });
 
+        const shapeCirclesExit = p2ShapeCircleQueryExit(ecsWorld);
+        shapeCirclesExit.map(eid => {
+            p2ShapeCirclesById.delete(eid);
+            console.log(eid, ": P2ShapeCircle deleted");
+        });
 
         return ecsWorld;
     })

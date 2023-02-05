@@ -37,7 +37,7 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
         console.log('PacmanMiniRoom: onCreate()');
 
         // limit number clients
-        this.maxClients = 1;
+        this.maxClients = 2;
 
         this.setState(new PacmanMiniState());
 
@@ -89,7 +89,7 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
 
         // CREATE SYSTEMS
         this.systems.push(createClientPacmanControllerSystem());
-        this.systems.push(createMiniPacmanControllerSystem(this.world, this.events));
+        this.systems.push(createMiniPacmanControllerSystem(this.world, this.events, this.state.gameObjects));
         this.systems.push(createP2PhysicsSystem(this.events));
         this.systems.push(createGameObjectSyncSystem(this.state.gameObjects));
 

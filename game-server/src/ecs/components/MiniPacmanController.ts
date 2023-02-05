@@ -12,6 +12,7 @@ export enum MiniPacmanState {
 export const MiniPacmanController = defineComponent({
     // events
     eventPacmanContact: Types.ui8,
+    eventPacmanContactEid: Types.ui8,
     eventPortalContact: Types.ui8,
 
     // status
@@ -32,5 +33,7 @@ export const MiniPacmanController = defineComponent({
     followingEid: Types.ui8,
 
     color: Types.ui16,
+
+    destroy: Types.ui8,
 
 });

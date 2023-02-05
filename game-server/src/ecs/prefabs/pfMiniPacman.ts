@@ -1,7 +1,8 @@
 import {
     addEntity,
     addComponent,
-    IWorld
+    IWorld,
+    removeComponent
 } from 'bitecs';
 
 import { GameObjectSync } from '../components/GameObjectSync';
@@ -12,6 +13,7 @@ import { sGameObject } from '../../types/sGameObject';
 import { sMiniPacman } from '../../types/sMiniPacman';
 import { MiniPacmanController } from '../components/MiniPacmanController';
 import { Color } from '../components/Color';
+import { GSSolver } from 'p2';
 
 export const createPfMiniPacman = (world: IWorld, gos: MapSchema<sGameObject>, x: number, y: number, color: number = 0xffcc00) => {
     const eid = addEntity(world);
@@ -38,4 +40,13 @@ export const createPfMiniPacman = (world: IWorld, gos: MapSchema<sGameObject>, x
     addComponent(world, GameObjectSync, eid);
 
     return eid;
+}
+
+export const destroyPfMiniPacman = (world: IWorld, eid: number, gos: MapSchema<sGameObject>) => {
+    removeComponent(world, P2Body, eid);
+    removeComponent(world, P2ShapeCircle, eid);
+    removeComponent(world, Color, eid);
+    removeComponent(world, MiniPacmanController, eid);
+    removeComponent(world, GameObjectSync, eid);
+    gos.delete(eid.toString());
 }

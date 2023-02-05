@@ -1,8 +1,10 @@
 import { Schema } from "@colyseus/schema";
+import { throws } from "assert";
 import { Client, Room } from "colyseus.js";
 import EventEmitter from "events";
 
 import { iPacmanMiniState } from '../../../../game-server/src/types/iPacmanMiniState';
+import { GameObjectType } from "../../../../game-server/src/types/sGameObject";
 
 export default class GameServerHandler {
     private client!: Client;
@@ -25,16 +27,11 @@ export default class GameServerHandler {
             // console.log(state.serverTime);
         });
 
-        // this.room.onMessage('update-game-state', (dt_ms) => {
-        //     this.events.emit('update-game-state', this.room.state);
-
-        //     // console.log(dt_ms);
-            
-        //     const c = Date.now();
-        //     const dt = c - this.previous_ms;
-        //     this.previous_ms = c;
-        //     console.log(dt, dt_ms);
-        // });
+        this.room.state.gameObjects.onRemove = (player, key) => {
+            if (player.type === GameObjectType.MiniPacman) {
+                console.log('Mini pacman saved!');
+            }
+        };
 
         this.room.onMessage('start-match', (serverGameConfig) => {
             this.events.emit('start-match', serverGameConfig);
