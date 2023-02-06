@@ -75,7 +75,7 @@ export class PlayMatch extends Phaser.Scene {
                     if (go.sessionId === this.bootStrap.server.room.sessionId) {
                         playerEid = createPfServerPacman(this.world, parseInt(eid), go);
                     } else {
-                        createPfServerPacman(this.world, parseInt(eid), go);
+                        const otherPlayerEid = createPfServerPacman(this.world, parseInt(eid), go);
                     }
                     break;
                 }

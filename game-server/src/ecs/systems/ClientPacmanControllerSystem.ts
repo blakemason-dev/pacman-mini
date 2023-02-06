@@ -15,6 +15,7 @@ const PACMAN_SPEED = 3.5;
 const DASH_DISTANCE = 3;
 
 export const createClientPacmanControllerSystem = () => {
+
     // create queries
     const pacmanQuery = defineQuery([P2Body, ClientPacmanController]);
 
@@ -31,7 +32,7 @@ export const createClientPacmanControllerSystem = () => {
             // check events
             if (ClientPacmanController.eventPacmanContact[eid]) {
                 handlePacmanContact(eid);
-                ClientPacmanController.eventPacmanContact[eid] = 0;
+                // ClientPacmanController.eventPacmanContact[eid] = 0;
             }
 
             // check states
@@ -139,6 +140,6 @@ const handlePacmanContact = (eid: number) => {
         P2Body.applyForce.x[eid] = x * 5000;
         P2Body.applyForce.y[eid] = y * 5000;
         P2Body.applyForce.activate[eid] = 1;
-        ClientPacmanController.knockedTIme[eid] = 1;
+        ClientPacmanController.knockedTIme[eid] = 0.5;
     }
 }

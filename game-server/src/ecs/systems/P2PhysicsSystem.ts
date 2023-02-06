@@ -58,18 +58,17 @@ export const createP2PhysicsSystem = (events: EventEmitter) => {
         events.emit('beginEntityContact', eids);
     });
 
-    // p2World.emitImpactEvent = true;
-    // p2World.on('impact', (data: { shapeA: p2.Shape, shapeB: p2.Shape, bodyA: p2.Body, bodyB: p2.Body }) => {
-    //     let eids: number[] = [];
+    p2World.on('endContact', (data: { shapeA: p2.Shape, shapeB: p2.Shape, bodyA: p2.Body, bodyB: p2.Body}) => {
+        let eids: number[] = [];
 
-    //     p2BodiesById.forEach((val, key, map) => {
-    //         if (val.id === data.bodyA.id || val.id === data.bodyB.id) {
-    //             eids.push(key);
-    //         }
-    //     });
+        p2BodiesById.forEach((val, key, map) => {
+            if (val.id === data.bodyA.id || val.id === data.bodyB.id) {
+                eids.push(key);
+            }
+        });
 
-    //     events.emit('impact', eids);
-    // });
+        events.emit('endEntityContact', eids);
+    });
 
 
     const FIXED_TIME_STEP = 1 / 20;

@@ -32,6 +32,8 @@ export const createMiniPacmanControllerSystem = (world: IWorld, events: EventEmi
         miniPacmen.map(eid => {
             // destroy
             if (MiniPacmanController.destroy[eid]) {
+                // if we were following someone increase their score
+                ClientPacmanController.score[MiniPacmanController.followingEid[eid]] += 1;
                 destroyPfMiniPacman(ecsWorld, eid, gos);
             }
 

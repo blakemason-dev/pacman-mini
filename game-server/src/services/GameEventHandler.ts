@@ -25,11 +25,6 @@ export class GameEventHandler {
     start() {
         this.events.on('beginEntityContact', eids => {
             let eidPair: number[] | boolean = false;
-            // pacman collision with rescue portal
-            // let eidPair = this.getComponentPair(ClientPacmanController, MiniPacmanRescueZone, eids);
-            // if (eidPair) {
-            //     ClientPacmanController.eventPortal[eidPair[0]] = 1;
-            // }
 
             // mini pacman collision with portal
             eidPair = this.getComponentPair(MiniPacmanController, MiniPacmanRescueZone, eids);
@@ -54,17 +49,18 @@ export class GameEventHandler {
             }
         });
 
-        // this.events.on('impact', eids => {
-        //     // pacman collision with another pacman
-        //     let eidPair = this.getComponentPair(ClientPacmanController, ClientPacmanController, eids);
-        //     if (eidPair) {
-        //         console.log('impact');
-        //         ClientPacmanController.eventPacmanContact[eidPair[0]] = 1;
-        //         ClientPacmanController.eventPacmanContactEid[eidPair[0]] = eidPair[1];
-        //         ClientPacmanController.eventPacmanContact[eidPair[1]] = 1;
-        //         ClientPacmanController.eventPacmanContactEid[eidPair[1]] = eidPair[0];
-        //     }
-        // });
+        this.events.on('endEntityContact', eids => {
+            let eidPair: number[] | boolean = false;
+
+            // pacman de-collision with another pacman
+            eidPair = this.getComponentPair(ClientPacmanController, ClientPacmanController, eids);
+            if (eidPair) {
+                ClientPacmanController.eventPacmanContact[eidPair[0]] = 0;
+                ClientPacmanController.eventPacmanContactEid[eidPair[0]] = eidPair[1];
+                ClientPacmanController.eventPacmanContact[eidPair[1]] = 0;
+                ClientPacmanController.eventPacmanContactEid[eidPair[1]] = eidPair[0];
+            }
+        });
 
     }
 

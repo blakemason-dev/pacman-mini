@@ -63,14 +63,19 @@ export const createSnapshotInterpolationSystem = (server: GameServerHandler, ser
         eids.map(eid => {
             const buff = buffer.get(eid);
             if (buff) {
-                buff.push({
+                const snapshot = {
                     position: {
                         x: Transform.position.x[eid],
                         y: Transform.position.y[eid]
                     },
                     rotaton: Transform.rotation[eid],
                     timeStamp: state.serverTime,
-                });
+                }
+                buff.push(snapshot);
+                // const numEmpty = NUM_BUFFER - buff.length;
+                // for (let i = 0; i < numEmpty; i++) {
+                //     buff.push(snapshot);
+                // }
 
                 if (buff.length > NUM_BUFFER) {
                     buff.shift();
@@ -119,8 +124,7 @@ export const createSnapshotInterpolationSystem = (server: GameServerHandler, ser
                     SnapshotInterpolation.render.position.x[eid] = dimensionLerp(buff[prev].position.x, buff[curr].position.x, lerp);
                     SnapshotInterpolation.render.position.y[eid] = dimensionLerp(buff[prev].position.y, buff[curr].position.y, lerp);
                     SnapshotInterpolation.render.rotation[eid] = angleLerp(buff[prev].rotaton, buff[curr].rotaton, lerp);
-                }
-
+                } 
             }
         });
 
