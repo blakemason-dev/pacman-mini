@@ -38,7 +38,7 @@ export const createClientPacmanControllerSystem = () => {
             // check states
             switch (ClientPacmanController.state[eid]) {
                 case ClientPacmanState.Roaming: {
-                    handleRoaming(eid);
+                    handleRoaming(eid, dt_ms);
                     break;
                 }
                 case ClientPacmanState.Dashing: {
@@ -57,7 +57,7 @@ export const createClientPacmanControllerSystem = () => {
     });
 }
 
-const handleRoaming = (eid: number) => {
+const handleRoaming = (eid: number, dt_ms: number) => {
     let velX = 0;
     let velY = 0;
     let angle = 0;
@@ -77,6 +77,8 @@ const handleRoaming = (eid: number) => {
         velX = 1;
     }
 
+    ClientPacmanController.dashCooldown[eid] -= dt_ms * 0.001;
+
     // if movement
     if (Math.abs(velX) > 0 || Math.abs(velY) > 0) {
         // grab vector length so we can normalize
@@ -86,7 +88,7 @@ const handleRoaming = (eid: number) => {
         angle = Math.atan2(velY, velX);
 
         // see if dash was pushed
-        if (ClientPacmanController.eventDash[eid]) {
+        if (ClientPacmanController.eventDash[eid] && ClientPacmanController.dashCooldown[eid] <= 0) {
             ClientPacmanController.state[eid] = ClientPacmanState.Dashing;
             ClientPacmanController.dashDirection.x[eid] = velX / length;
             ClientPacmanController.dashDirection.y[eid] = velY / length;
@@ -117,6 +119,7 @@ const handleDashing = (eid: number, dt_ms: number) => {
     ClientPacmanController.dashTime[eid] -= dt_ms * 0.001;
     if (ClientPacmanController.dashTime[eid] <= 0) {
         ClientPacmanController.state[eid] = ClientPacmanState.Roaming;
+        ClientPacmanController.dashCooldown[eid] = 1;
     }
 }
 

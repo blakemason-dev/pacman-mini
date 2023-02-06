@@ -31,6 +31,7 @@ export const ClientPacmanController = defineComponent({
         y: Types.f32,
     },
     dashSpeed: Types.f32,
+    dashCooldown: Types.f32,
 
     // knocked vars
     knockedTIme: Types.f32,

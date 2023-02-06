@@ -8,6 +8,7 @@ import {
 import Phaser from 'phaser';
 import { iServerGameConfig } from '../../../../game-server/src/types/iServerGameConfig';
 import { GameObjectType, sGameObject } from '../../../../game-server/src/types/sGameObject';
+import { createPfGuiScore } from '../ecs/prefabs/gui/pfGuiScore';
 import { createPfServerCliffArea } from '../ecs/prefabs/network/pfServerCliffArea';
 import { createPfServerMiniPacman } from '../ecs/prefabs/network/pfServerMiniPacman';
 import { createPfServerPacman } from '../ecs/prefabs/network/pfServerPacman';
@@ -15,6 +16,8 @@ import { createPfServerPortal } from '../ecs/prefabs/network/pfServerPortal';
 import { createPfServerWall } from '../ecs/prefabs/network/pfServerWall';
 import { createPfMainCamera } from '../ecs/prefabs/pfMainCamera';
 import { createCircleSystem } from '../ecs/systems/CircleSystem';
+import { createGuiScoreSystem } from '../ecs/systems/gui/GuiScoreSystem';
+import { createGuiTextSystem } from '../ecs/systems/gui/GuiTextSystem';
 import { createImageSystem } from '../ecs/systems/ImageSystem';
 import { createMainCameraSystem } from '../ecs/systems/MainCameraSystem';
 import { createServerGameObjectSyncSystem } from '../ecs/systems/network/ServerGameObjectSyncSystem';
@@ -72,10 +75,12 @@ export class PlayMatch extends Phaser.Scene {
         this.bootStrap.server.room.state.gameObjects.forEach((go, eid) => {
             switch (go.type) {
                 case GameObjectType.Pacman: {
+                    let finalEid = -1;
                     if (go.sessionId === this.bootStrap.server.room.sessionId) {
                         playerEid = createPfServerPacman(this.world, parseInt(eid), go);
+                        finalEid = playerEid;
                     } else {
-                        const otherPlayerEid = createPfServerPacman(this.world, parseInt(eid), go);
+                        finalEid = createPfServerPacman(this.world, parseInt(eid), go);
                     }
                     break;
                 }
@@ -102,6 +107,10 @@ export class PlayMatch extends Phaser.Scene {
         // create a camera entity and follow the player
         createPfMainCamera(this.world, playerEid);
 
+        // create scores
+        createPfGuiScore(this.world, 0xff0000, window.innerWidth/3, window.innerHeight*0.1);
+        createPfGuiScore(this.world, 0x0000ff, window.innerWidth*2/3, window.innerHeight*0.1);
+
         // Start listening for input
         this.clientInputHandler = new ClientInputHandler(this, this.bootStrap.server);
         this.clientInputHandler.startListening();
@@ -122,6 +131,10 @@ export class PlayMatch extends Phaser.Scene {
         this.systems.push(createImageSystem(this, serverGameConfig));
         this.systems.push(createCircleSystem(this, serverGameConfig));
         this.systems.push(createMainCameraSystem(this, serverGameConfig));
+
+        // 4. GUI
+        this.systems.push(createGuiTextSystem(this));
+        this.systems.push(createGuiScoreSystem(this, this.world, this.bootStrap.server));
     }
 
     private accum = 0;

@@ -5,6 +5,7 @@ import {
     exitQuery,
     IWorld,
 } from 'bitecs';
+import { GuiScore } from '../../components/gui/GuiScore';
 
 import { GuiText } from '../../components/gui/GuiText';
 import { GuiTransform } from '../../components/gui/GuiTransform';
@@ -16,6 +17,8 @@ export const createGuiTextSystem = (scene: Phaser.Scene) => {
     const textQuery = defineQuery([GuiText, GuiTransform]);
     const textQueryEnter = enterQuery(textQuery);
     const textQueryExit = exitQuery(textQuery);
+
+    const guiScoresQuery = defineQuery([GuiScore]);
 
     return defineSystem((world: IWorld) => {
         const enterTexts = textQueryEnter(world);
@@ -33,6 +36,7 @@ export const createGuiTextSystem = (scene: Phaser.Scene) => {
                 GuiText.origin.x[eid],
                 GuiText.origin.y[eid]
             )
+            textsById.get(eid)?.setScrollFactor(0);
         });
 
         const exitTexts = textQueryExit(world);
@@ -41,6 +45,11 @@ export const createGuiTextSystem = (scene: Phaser.Scene) => {
             textsById.get(eid)?.destroy();
             textsById.delete(eid);
         });
+
+        const guiScores = guiScoresQuery(world);
+        guiScores.map(eid => {
+            textsById.get(eid)?.setText(GuiScore.score[eid].toString());
+        })
 
         return world;
     });

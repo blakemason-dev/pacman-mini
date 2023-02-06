@@ -9,6 +9,8 @@
 - optimize the texture switch code so it doesn't update every loop for pacmen
 - Make the screen coordinate converter a bit more generic (should really 
 be something called by the client in case we build something without a server)
+- decouple GuiText from GuiScore systems
+- score if mini pacmen are touched when they are in the portal
 - ~~prevent minis from being stolen (only lunges should break them off)~~
 - ~~add mini pacman generator~~
 - ~~add lunge attack~~

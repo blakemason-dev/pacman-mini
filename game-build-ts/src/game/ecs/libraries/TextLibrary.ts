@@ -31,6 +31,26 @@ const library = [
         type: 'TEXT'
     },
     {
+        key: 'red-score',
+        text: '0',
+        style: {
+            fontFamily: "arial",
+            fontSize: "20px",
+            color: "#ff0000"
+        },
+        type: 'TEXT'
+    },
+    {
+        key: 'blue-score',
+        text: '0',
+        style: {
+            fontFamily: "arial",
+            fontSize: "20px",
+            color: "#0000ff"
+        },
+        type: 'TEXT'
+    },
+    {
         key: 'find-match',
         text: 'FIND MATCH',
         style: {
