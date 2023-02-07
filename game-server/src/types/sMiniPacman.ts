@@ -15,9 +15,13 @@ export class sMiniPacman extends sGameObject {
     @type('number')
     color: number = 0xffcc00;
 
-    constructor(x: number = 0, y: number = 0) {
+    @type('number')
+    serverEid: number = -1;
+
+    constructor(serverEid: number, x: number = 0, y: number = 0) {
         super(GameObjectType.MiniPacman);
         this.position.x = x;
         this.position.y = y;
+        this.serverEid = serverEid;
     }
 }   

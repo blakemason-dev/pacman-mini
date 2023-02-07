@@ -31,17 +31,16 @@ export const createMiniPacmanControllerSystem = (world: IWorld, events: EventEmi
         const miniPacmen = miniPacmenQuery(ecsWorld);
         miniPacmen.map(eid => {
             // destroy
-            if (MiniPacmanController.destroy[eid]) {
+            if (MiniPacmanController.triggerDestroy[eid]) {
                 destroyPfMiniPacman(ecsWorld, eid, gos);
             }
 
             // handle events
-            if (MiniPacmanController.eventPortalContact[eid]) {
+            if (MiniPacmanController.inPortal[eid]) {
                 // console.log('Rescued!');
                 if (MiniPacmanController.state[eid] === MiniPacmanState.Following) {
                     rescue(eid);
                 }
-                MiniPacmanController.eventPortalContact[eid] = 0;
             }
             if (MiniPacmanController.eventPacmanContact[eid]) {
                 // Change pacman state to following and make it same color as its new friend
@@ -103,6 +102,5 @@ export const createMiniPacmanControllerSystem = (world: IWorld, events: EventEmi
 const rescue = (eid: number) => {
     const leaderEid = MiniPacmanController.followingEid[eid];
     ClientPacmanController.score[leaderEid] += 1;
-    console.log('rescue');
-    MiniPacmanController.destroy[eid] = 1;
+    MiniPacmanController.triggerDestroy[eid] = 1;
 }

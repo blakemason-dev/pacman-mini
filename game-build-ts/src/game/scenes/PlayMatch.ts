@@ -21,6 +21,7 @@ import { createGuiTextSystem } from '../ecs/systems/gui/GuiTextSystem';
 import { createImageSystem } from '../ecs/systems/ImageSystem';
 import { createMainCameraSystem } from '../ecs/systems/MainCameraSystem';
 import { createServerGameObjectSyncSystem } from '../ecs/systems/network/ServerGameObjectSyncSystem';
+import { createServerMiniPacmanControllerSystem } from '../ecs/systems/network/ServerMiniPacmanControllerSystem';
 import { createSnapshotInterpolationSystem } from '../ecs/systems/SnapshotInterpolationSystem';
 import { ClientInputHandler } from '../services/ClientInputHandler';
 
@@ -70,6 +71,8 @@ export class PlayMatch extends Phaser.Scene {
 
         // Create ECS world
         this.world = createWorld();
+
+        let portalEid = -1;
         
         // Create entities based on server types in state
         this.bootStrap.server.room.state.gameObjects.forEach((go, eid) => {
@@ -97,7 +100,7 @@ export class PlayMatch extends Phaser.Scene {
                     break;
                 }
                 case GameObjectType.Portal: {
-                    createPfServerPortal(this.world, go, parseInt(eid));
+                    portalEid = createPfServerPortal(this.world, go, parseInt(eid));
                     break;
                 }
                 default: break;
@@ -123,6 +126,7 @@ export class PlayMatch extends Phaser.Scene {
         this.systems.push(createServerGameObjectSyncSystem(this.bootStrap.server, this.world));
 
         // 2. input processing systems
+        this.systems.push(createServerMiniPacmanControllerSystem(this.bootStrap.server, this.world, portalEid))
 
         // 3a. render interpolation systems
         this.systems.push(createSnapshotInterpolationSystem(this.bootStrap.server, serverGameConfig, this.world));

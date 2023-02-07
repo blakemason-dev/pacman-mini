@@ -5,6 +5,7 @@ import EventEmitter from "events";
 
 import { iPacmanMiniState } from '../../../../game-server/src/types/iPacmanMiniState';
 import { GameObjectType } from "../../../../game-server/src/types/sGameObject";
+import { sMiniPacman } from "../../../../game-server/src/types/sMiniPacman";
 
 export default class GameServerHandler {
     private client!: Client;
@@ -28,8 +29,7 @@ export default class GameServerHandler {
 
         this.room.state.gameObjects.onRemove = (player, key) => {
             if (player.type === GameObjectType.MiniPacman) {
-                console.log('Mini pacman saved!');
-                console.log(key);
+                this.events.emit('mini-pacman-saved', player);
             }
         };
 

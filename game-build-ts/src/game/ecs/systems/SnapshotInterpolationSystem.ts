@@ -72,10 +72,6 @@ export const createSnapshotInterpolationSystem = (server: GameServerHandler, ser
                     timeStamp: state.serverTime,
                 }
                 buff.push(snapshot);
-                // const numEmpty = NUM_BUFFER - buff.length;
-                // for (let i = 0; i < numEmpty; i++) {
-                //     buff.push(snapshot);
-                // }
 
                 if (buff.length > NUM_BUFFER) {
                     buff.shift();

@@ -29,7 +29,6 @@ export const createServerGameObjectSyncSystem = (server: GameServerHandler, ecsW
     // create one off listeners
     const eids = syncerQuery(ecsWorld);
     events.on('state-changed', state => {
-    // events.on('update-game-state', (state: iPacmanMiniState) => {
         eids.map(eid => {
             const sgoEid = ServerGameObjectSync.serverEid[eid];
             const sgo = state.gameObjects.get(sgoEid.toString());

@@ -18,6 +18,9 @@ export const MiniPacmanController = defineComponent({
     // status
     state: Types.ui8,
 
+    // contact states
+    inPortal: Types.ui8,
+
     // roam variables
     roamTimer: Types.f32,
     roamTimeMin: Types.f32,
@@ -34,6 +37,7 @@ export const MiniPacmanController = defineComponent({
 
     color: Types.ui16,
 
-    destroy: Types.ui8,
+    // trigger functions
+    triggerDestroy: Types.ui8,
 
 });

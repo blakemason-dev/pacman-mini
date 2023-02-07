@@ -58,16 +58,9 @@ export const createImageSystem = (scene: Phaser.Scene, serverGameConfig: iServer
                 ConvertServer.dimToPhaser(Image.height[eid], serverGameConfig, scene.scale)
             );
 
-            // check if has interpolator
-            // if (hasComponent(world, TransformRenderInterpolator, eid)) {
-            //     // update image position
-            //     imagesById.get(eid)?.setPosition(
-            //         ConvertServer.xToPhaser(TransformRenderInterpolator.interp.position.x[eid], serverGameConfig, scene.scale),
-            //         ConvertServer.yToPhaser(TransformRenderInterpolator.interp.position.y[eid], serverGameConfig, scene.scale)
-            //     );
-            //     // update image angle
-            //     imagesById.get(eid)?.setAngle(ConvertServer.radToPhaserAngle(TransformRenderInterpolator.interp.rotation[eid]));
-            // } 
+            // update alpha
+            imagesById.get(eid)?.setAlpha(Image.alpha[eid]);
+
             if (hasComponent(world, SnapshotInterpolation, eid)) {
                 // update image position
                 imagesById.get(eid)?.setPosition(

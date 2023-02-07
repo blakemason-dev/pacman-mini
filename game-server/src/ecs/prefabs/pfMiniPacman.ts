@@ -17,7 +17,7 @@ import { GSSolver } from 'p2';
 
 export const createPfMiniPacman = (world: IWorld, gos: MapSchema<sGameObject>, x: number, y: number, color: number = 0xffcc00) => {
     const eid = addEntity(world);
-    gos.set(eid.toString(), new sMiniPacman(x,y));
+    gos.set(eid.toString(), new sMiniPacman(eid, x,y));
 
     addComponent(world, P2Body, eid);
     P2Body.mass[eid] = 0.05;
