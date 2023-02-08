@@ -31,7 +31,5 @@ export const createGuiButtonPrefabEntity = (world: IWorld, textLibraryKey: strin
 
     addComponent(world, GuiEvent, eid);
 
-    console.log('created button');
-
     return eid;
 }

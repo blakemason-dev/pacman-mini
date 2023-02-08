@@ -33,6 +33,10 @@ export default class GameServerHandler {
             }
         };
 
+        this.room.onMessage('all-mini-pacmen-saved', winnerPacman => {
+            this.events.emit('all-mini-pacmen-saved', winnerPacman);
+        });
+
         this.room.onMessage('start-match', (serverGameConfig) => {
             this.events.emit('start-match', serverGameConfig);
         });

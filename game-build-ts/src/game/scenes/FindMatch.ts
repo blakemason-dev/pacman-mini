@@ -8,13 +8,14 @@ import { BootStrap } from './BootStrap';
 
 import { 
     createWorld,
+    deleteWorld,
     IWorld,
     removeEntity,
     System
 } from 'bitecs';
 
 import EventEmitter from 'events';
-import { createPfGuiFindMatchButton } from '../ecs/prefabs/gui/pfGuiFindMatchButton';
+import { createPfGuiFindMatchButton, destroyPfGuiFindMatchButton } from '../ecs/prefabs/gui/pfGuiFindMatchButton';
 import { GuiTransform } from '../ecs/components/gui/GuiTransform';
 import { createGuiRectangleSystem } from '../ecs/systems/gui/GuiRectangleSystem';
 import { createGuiTextSystem } from '../ecs/systems/gui/GuiTextSystem';
@@ -24,7 +25,7 @@ export class FindMatch extends Phaser.Scene {
     private guiRectangleSystem!: System;
     private guiTextSystem!: System;
 
-    private sceneText!: Phaser.GameObjects.Text;
+    // private sceneText!: Phaser.GameObjects.Text;
 
     private bootStrap!: BootStrap;
 
@@ -52,16 +53,16 @@ export class FindMatch extends Phaser.Scene {
 
         this.eventEmitter = new EventEmitter();
 
-        this.sceneText = this.add.text(
-            this.scale.width*0.025,
-            this.scale.width*0.025,
-            "Scene: FindMatch",
-            {
-                fontFamily: 'arial',
-                fontSize: '20px',
-                color: '#ffffff'
-            }
-        ).setOrigin(0,0);
+        // this.sceneText = this.add.text(
+        //     this.scale.width*0.025,
+        //     this.scale.width*0.025,
+        //     "Scene: FindMatch",
+        //     {
+        //         fontFamily: 'arial',
+        //         fontSize: '20px',
+        //         color: '#ffffff'
+        //     }
+        // ).setOrigin(0,0);
 
         // create ECS world
         this.world = createWorld();
@@ -72,8 +73,8 @@ export class FindMatch extends Phaser.Scene {
         GuiTransform.position.y[eidFindMatchButton] = this.scale.height*0.5;
         this.eventEmitter.on('GuiRectangle-POINTER_UP', (eid) => {
             if (eid === eidFindMatchButton) {
-                this.sceneText.destroy();
-                removeEntity(this.world, eidFindMatchButton);
+                // this.sceneText.destroy();
+                destroyPfGuiFindMatchButton(this.world, eidFindMatchButton);
                 this.switchScene = true;
                 this.eventEmitter.removeAllListeners();
             }
@@ -93,7 +94,12 @@ export class FindMatch extends Phaser.Scene {
 
         // if we got a switchscene message at some stage, change scenes
         if (this.switchScene) {
+            // this.destroyWorld();
             this.bootStrap.switch('find-match', 'search-match');
         }
+    }
+
+    destroyWorld() {
+        deleteWorld(this.world);
     }
 }

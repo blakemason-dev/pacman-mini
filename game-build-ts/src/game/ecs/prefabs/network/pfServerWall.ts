@@ -1,7 +1,9 @@
 import {
     addEntity,
     addComponent,
-    IWorld
+    IWorld,
+    removeComponent,
+    removeEntity
 } from 'bitecs';
 
 import * as AssetLibrary from '../../libraries/AssetLibrary';
@@ -37,4 +39,10 @@ export const createPfServerWall = (
     // ServerGameObjectSync.serverEid[eid] = serverEid;
 
     return eid;
+}
+
+export const destroyPfServerWall = (world: IWorld, eid: number) => {
+    removeComponent(world, Image, eid);
+    removeComponent(world, Transform, eid);
+    removeEntity(world, eid);
 }

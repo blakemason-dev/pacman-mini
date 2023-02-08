@@ -121,6 +121,13 @@ export const createSnapshotInterpolationSystem = (server: GameServerHandler, ser
                     SnapshotInterpolation.render.position.y[eid] = dimensionLerp(buff[prev].position.y, buff[curr].position.y, lerp);
                     SnapshotInterpolation.render.rotation[eid] = angleLerp(buff[prev].rotaton, buff[curr].rotaton, lerp);
                 } 
+
+                if (buff.length < NUM_BUFFER) {
+                    SnapshotInterpolation.render.position.x[eid] = Transform.position.x[eid];
+                    SnapshotInterpolation.render.position.y[eid] = Transform.position.y[eid];
+                    SnapshotInterpolation.render.rotation[eid] = Transform.rotation[eid];
+                    console.log('here');
+                }
             }
         });
 

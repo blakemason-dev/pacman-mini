@@ -1,9 +1,11 @@
 import {
     addEntity,
     addComponent,
-    IWorld
+    IWorld,
+    removeComponent,
+    removeEntity
 } from 'bitecs';
-import { GuiEvent, GuiEventEnum } from '../../components/gui/GuiEvent';
+
 import { GuiRectangle } from '../../components/gui/GuiRectangle';
 import { GuiText } from '../../components/gui/GuiText';
 import { GuiTransform } from '../../components/gui/GuiTransform';
@@ -29,6 +31,14 @@ export const createPfGuiFindMatchButton = (world: IWorld) => {
     GuiText.textIndex[eid] = TextLibrary.getIndex('find-match');
     GuiText.origin.x[eid] = 0.5;
     GuiText.origin.y[eid] = 0.5;
+    GuiText.sizePixels[eid] = 24;
 
     return eid;
+}
+
+export const destroyPfGuiFindMatchButton = (world: IWorld, eid: number) => {
+    removeComponent(world, GuiRectangle, eid);
+    removeComponent(world, GuiTransform, eid);
+    removeComponent(world, GuiText, eid);
+    removeEntity(world, eid);
 }

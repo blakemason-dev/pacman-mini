@@ -1,7 +1,9 @@
 import {
     addEntity,
     addComponent,
-    IWorld
+    IWorld,
+    removeComponent,
+    removeEntity
 } from 'bitecs';
 
 import { MainCamera } from '../components/MainCamera';
@@ -19,4 +21,10 @@ export const createPfMainCamera = (world: IWorld, followEntityEid: number) => {
     Transform.position.y[eid] = 0;
 
     return eid;
+}
+
+export const destroyPfMainCamera = (world: IWorld, eid: number) => {
+    removeComponent(world, MainCamera, eid);
+    removeComponent(world, Transform, eid);
+    removeEntity(world, eid);
 }

@@ -1,7 +1,9 @@
 import {
     addEntity,
     addComponent,
-    IWorld
+    IWorld,
+    removeComponent,
+    removeEntity
 } from 'bitecs';
 
 import * as AssetLibrary from '../../libraries/AssetLibrary';
@@ -38,4 +40,13 @@ export const createPfServerPacman = (world: IWorld, serverEid: number, go: sGame
     addComponent(world, PacmanColor, eid);
 
     return eid;
+}
+
+export const destroyPfServerPacman = (world: IWorld, eid: number) => {
+    removeComponent(world, Image, eid);
+    removeComponent(world, Transform, eid);
+    removeComponent(world, ServerGameObjectSync, eid);
+    removeComponent(world, SnapshotInterpolation, eid);
+    removeComponent(world, PacmanColor, eid);
+    removeEntity(world, eid);
 }

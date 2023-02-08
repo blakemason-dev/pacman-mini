@@ -35,7 +35,6 @@ export const createServerMiniPacmanControllerSystem = (server: GameServerHandler
     events.on('mini-pacman-saved', (goMiniPacman: sMiniPacman) => {
         // search our map for the correct server eid
         minisByServerEid.forEach((val, key) => {
-            console.log(val, goMiniPacman.serverEid);
             if (goMiniPacman.serverEid === val) {
                 ServerMiniPacmanController.state[key] = ServerMiniPacmanState.ClientControl;
                 // grab final position

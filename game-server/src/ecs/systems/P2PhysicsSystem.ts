@@ -196,14 +196,12 @@ export const createP2PhysicsSystem = (events: EventEmitter) => {
                 });
                 p2World.removeBody(bod);
                 p2BodiesById.delete(eid);
-                console.log(eid, ": P2Body deleted");
             }
         });
 
         const shapeCirclesExit = p2ShapeCircleQueryExit(ecsWorld);
         shapeCirclesExit.map(eid => {
             p2ShapeCirclesById.delete(eid);
-            console.log(eid, ": P2ShapeCircle deleted");
         });
 
         return ecsWorld;

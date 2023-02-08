@@ -12,4 +12,5 @@ export const GuiText = defineComponent({
         y: Types.f32
     },
     sizePixels: Types.f32,
+    depth: Types.ui32,
 });

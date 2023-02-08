@@ -53,7 +53,6 @@ export const createGuiRectangleSystem = (scene: Phaser.Scene, eventEmitter: Even
 
         const exitRects = rectQueryExit(world); 
         exitRects.map(eid => {
-            console.log('Destroying rectsById: ', eid);
             rectsById.get(eid)?.destroy();
             rectsById.delete(eid);
         });

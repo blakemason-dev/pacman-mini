@@ -35,7 +35,7 @@ const library = [
         text: '0',
         style: {
             fontFamily: "arial",
-            fontSize: "20px",
+            fontSize: "30px",
             color: "#ff0000"
         },
         type: 'TEXT'
@@ -45,7 +45,17 @@ const library = [
         text: '0',
         style: {
             fontFamily: "arial",
-            fontSize: "20px",
+            fontSize: "30px",
+            color: "#0000ff"
+        },
+        type: 'TEXT'
+    },
+    {
+        key: 'game-over',
+        text: '0',
+        style: {
+            fontFamily: "arial",
+            fontSize: "48px",
             color: "#0000ff"
         },
         type: 'TEXT'

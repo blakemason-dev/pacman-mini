@@ -2,7 +2,9 @@ import {
     addEntity,
     addComponent,
     IWorld,
-    removeComponent
+    removeComponent,
+    removeEntity,
+    entityExists
 } from 'bitecs';
 
 import * as AssetLibrary from '../../libraries/AssetLibrary';
@@ -45,9 +47,12 @@ export const createPfServerMiniPacman = (world: IWorld, serverEid: number, go: s
 }
 
 export const destroyPfServerMiniPacman = (world: IWorld, eid: number) => {
+    if (!entityExists(world, eid)) return;
+    
     removeComponent(world, Image, eid);
     removeComponent(world, Transform, eid);
     removeComponent(world, ServerGameObjectSync, eid);
     removeComponent(world, SnapshotInterpolation, eid);
     removeComponent(world, PacmanColor, eid);
+    removeEntity(world, eid);
 }

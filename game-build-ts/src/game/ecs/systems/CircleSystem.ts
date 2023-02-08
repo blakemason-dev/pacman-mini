@@ -29,7 +29,6 @@ export const createCircleSystem = (scene: Phaser.Scene, serverGameConfig: iServe
         // ENTER: Transform, Image, 
         const circlesEnter = circleQueryEnter(world);
         circlesEnter.map(eid => {
-            console.log('lets create a circle for phaser');
             // add to images by id
             circlesById.set(eid, scene.add.circle(
                 Transform.position.x[eid],

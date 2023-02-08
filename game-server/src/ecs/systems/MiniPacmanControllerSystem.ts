@@ -7,7 +7,7 @@ import {
 } from "bitecs";
 
 import { EventEmitter } from 'events';
-import { sGameObject } from "../../types/sGameObject";
+import { GameObjectType, sGameObject } from "../../types/sGameObject";
 import { ClientPacmanController, ClientPacmanState } from "../components/ClientPacmanController";
 import { Color } from "../components/Color";
 import { MiniPacmanController, MiniPacmanState } from "../components/MiniPacmanController";
@@ -31,15 +31,24 @@ export const createMiniPacmanControllerSystem = (world: IWorld, events: EventEmi
         const miniPacmen = miniPacmenQuery(ecsWorld);
         miniPacmen.map(eid => {
             // destroy
-            if (MiniPacmanController.triggerDestroy[eid]) {
-                destroyPfMiniPacman(ecsWorld, eid, gos);
-            }
+            // if (MiniPacmanController.triggerDestroy[eid]) {
+            //     destroyPfMiniPacman(ecsWorld, eid, gos);
+            // }
 
             // handle events
             if (MiniPacmanController.inPortal[eid]) {
-                // console.log('Rescued!');
                 if (MiniPacmanController.state[eid] === MiniPacmanState.Following) {
                     rescue(eid);
+                    destroyPfMiniPacman(ecsWorld, eid, gos);
+                    let allGone = true;
+                    gos.forEach((go, eid) => {
+                        if (go.type === GameObjectType.MiniPacman) {
+                            allGone = false;
+                        }
+                    });
+                    if (allGone) {
+                        events.emit('all-mini-pacmen-saved');
+                    }
                 }
             }
             if (MiniPacmanController.eventPacmanContact[eid]) {
@@ -102,5 +111,5 @@ export const createMiniPacmanControllerSystem = (world: IWorld, events: EventEmi
 const rescue = (eid: number) => {
     const leaderEid = MiniPacmanController.followingEid[eid];
     ClientPacmanController.score[leaderEid] += 1;
-    MiniPacmanController.triggerDestroy[eid] = 1;
+    // MiniPacmanController.triggerDestroy[eid] = 1;
 }

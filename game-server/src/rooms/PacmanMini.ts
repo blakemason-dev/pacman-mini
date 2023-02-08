@@ -13,17 +13,18 @@ import { createGameObjectSyncSystem } from "../ecs/systems/GameObjectSyncSystem"
 import { createP2PhysicsSystem } from "../ecs/systems/P2PhysicsSystem";
 import { ClientMessageHandler } from "../services/ClientMessageHandler";
 import { sBackground } from "../types/sBackground";
-import { sGameObject } from "../types/sGameObject";
+import { GameObjectType, sGameObject } from "../types/sGameObject";
 import { sPacman } from "../types/sPacman";
 import PacmanMiniState from "./PacmanMiniState";
 import { EventEmitter } from 'events';
 import { GameEventHandler } from "../services/GameEventHandler";
 import { createPfMiniPacman } from "../ecs/prefabs/pfMiniPacman";
 import { createMiniPacmanControllerSystem } from "../ecs/systems/MiniPacmanControllerSystem";
+import { ClientPacmanController } from "../ecs/components/ClientPacmanController";
 
 const UPDATE_FPS = 10;
-const ARENA_WIDTH = 30;
-const ARENA_HEIGHT = 30;
+const ARENA_WIDTH = 12;
+const ARENA_HEIGHT = 12;
 const PORTAL_RADIUS = 1.5;
 
 export default class PacmanMiniRoom extends Room<PacmanMiniState> {
@@ -32,6 +33,8 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
     private events = new EventEmitter();
     private clientMessageHandler!: ClientMessageHandler;
     private gameEventHandler!: GameEventHandler;
+    // private clientPacmen: number[] = [];
+    private gameOver = false;
 
     onCreate() {
         console.log('PacmanMiniRoom: onCreate()');
@@ -56,13 +59,15 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
         console.log('PacmanMiniRoom: onJoin()' + ' => ' + client.sessionId);
 
         // create player pacman entity
-        createPfClientPacman(
+        const eid = createPfClientPacman(
             this.world,
             this.state.gameObjects,
             client.sessionId,
             this.clients.length === 1 ? ARENA_WIDTH / 5 : -ARENA_WIDTH / 5,
             0,
             this.clients.length === 1 ? 0x0000ff : 0xff0000);
+
+        // this.clientPacmen.push(eid);
 
         // if we're at max clients start the match
         if (this.clients.length === this.maxClients) {
@@ -113,6 +118,11 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
 
         // tell the clients match has been started
         this.broadcast('start-match', gameConfig, { afterNextPatch: true });
+
+        // listen for events
+        this.events.on('all-mini-pacmen-saved', () => {
+            this.emitGameOver();
+        });
     }
 
     stopMatch() {
@@ -152,7 +162,7 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
     }
 
     createMiniPacmen() {
-        const NUM_MINIS = 25;
+        const NUM_MINIS = 1;
 
         for (let i = 0; i < NUM_MINIS; i++) {
             const x = Math.random() * (ARENA_WIDTH * 0.9 / 2 - -ARENA_WIDTH * 0.9 / 2) + -ARENA_WIDTH * 0.9 / 2;
@@ -173,5 +183,27 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
         });
 
         this.state.serverTime += dt;
+    }
+
+    emitGameOver() {
+        // get our pacmen and update their scores
+        const pacmanGos: sPacman[] = [];
+        this.state.gameObjects.forEach((go, eid) => {
+            if (go.type === GameObjectType.Pacman) {
+                (go as sPacman).score = ClientPacmanController.score[parseInt(eid)];
+                pacmanGos.push(go as sPacman);
+            }
+        });
+
+        // determine winning pacman and send them out
+        let winnerPacman: sPacman;
+        if (pacmanGos.length === 2) {
+            if (pacmanGos[0].score > pacmanGos[1].score) {
+                winnerPacman = pacmanGos[0];
+            } else {
+                winnerPacman = pacmanGos[1];
+            }
+            this.broadcast('all-mini-pacmen-saved', winnerPacman, { afterNextPatch: true });
+        }
     }
 }

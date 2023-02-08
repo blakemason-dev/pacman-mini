@@ -37,11 +37,12 @@ export const createGuiTextSystem = (scene: Phaser.Scene) => {
                 GuiText.origin.y[eid]
             )
             textsById.get(eid)?.setScrollFactor(0);
+            textsById.get(eid)?.setDepth(GuiText.depth[eid]);
+            textsById.get(eid)?.setFontSize(GuiText.sizePixels[eid]);
         });
 
         const exitTexts = textQueryExit(world);
         exitTexts.map(eid => {
-            console.log('Destroying textsById: ', eid);
             textsById.get(eid)?.destroy();
             textsById.delete(eid);
         });
