@@ -9,4 +9,4 @@ Uses the game hosting framework and further develops the Entity Component System
 
 ## Play
 
-You can play mini pacman [here](www.server.mp.blakemasondev.com)
+You can play mini pacman [here](http://server.mp.blakemasondev.com)
