@@ -22,7 +22,7 @@ export const createPfServerWall = (
     const goWall = go as sWall;
 
     addComponent(world, Image, eid);
-    Image.textureIndex[eid] = AssetLibrary.getIndex('white-1x1');
+    Image.textureIndex[eid] = AssetLibrary.getIndex('white-pixel');
     Image.width[eid] = goWall.width;
     Image.height[eid] = goWall.height;
     Image.origin.x[eid] = 0.5;

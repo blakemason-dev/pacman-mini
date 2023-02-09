@@ -6,7 +6,7 @@ import bluePacman from '../../assets/blue-pacman.png';
 import redPacman from '../../assets/red-pacman.png';
 import whitePacman from '../../assets/white-pacman.png';
 import cliffArea from '../../assets/cliff-area.png';
-import white1x1 from '../../assets/white-1x1.png';
+import whitePixel from '../../assets/white-pixel.png';
 // import redGhost from '../assets/red-ghost.png';
 // import yellowGhost from '../assets/yellow-ghost.png';
 // import pinkGhost from '../assets/pink-ghost.png';
@@ -38,8 +38,8 @@ const library = [
         type: 'IMAGE'
     },
     {
-        key: 'white-1x1',
-        src: white1x1,
+        key: 'white-pixel',
+        src: whitePixel,
         type: 'IMAGE'
     },
     // {

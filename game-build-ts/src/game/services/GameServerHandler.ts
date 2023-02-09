@@ -14,7 +14,8 @@ export default class GameServerHandler {
     clientTime!: number;
 
     constructor() {
-        this.client = new Client("ws://localhost:8765");
+        // this.client = new Client("ws://localhost:8765");
+        this.client = new Client("ws://server.mp.blakemasondev.com");
         this.events = new EventEmitter();
     }
 

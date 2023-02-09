@@ -1,0 +1,34 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "ts-node-dev index.ts",
+    "build": "npx tsc",
+    "postbuild": "cp package.json build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@colyseus/command": "^0.2.1",
+    "@colyseus/schema": "^1.0.44",
+    "bitecs": "^0.3.38",
+    "colyseus": "^0.14.24",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "ejs": "^3.1.8",
+    "express": "^4.18.2",
+    "p2": "https://github.com/schteppe/p2.js.git"
+  },
+  "devDependencies": {
+    "@colyseus/monitor": "^0.14.22",
+    "@types/cors": "^2.8.13",
+    "@types/express": "^4.17.16",
+    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^4.9.4"
+  }
+}
