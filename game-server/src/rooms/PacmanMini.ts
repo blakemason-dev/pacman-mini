@@ -23,8 +23,8 @@ import { createMiniPacmanControllerSystem } from "../ecs/systems/MiniPacmanContr
 import { ClientPacmanController } from "../ecs/components/ClientPacmanController";
 
 const UPDATE_FPS = 10;
-const ARENA_WIDTH = 12;
-const ARENA_HEIGHT = 12;
+const ARENA_WIDTH = 20;
+const ARENA_HEIGHT = 20;
 const PORTAL_RADIUS = 1.5;
 
 export default class PacmanMiniRoom extends Room<PacmanMiniState> {
@@ -162,7 +162,7 @@ export default class PacmanMiniRoom extends Room<PacmanMiniState> {
     }
 
     createMiniPacmen() {
-        const NUM_MINIS = 1;
+        const NUM_MINIS = 9;
 
         for (let i = 0; i < NUM_MINIS; i++) {
             const x = Math.random() * (ARENA_WIDTH * 0.9 / 2 - -ARENA_WIDTH * 0.9 / 2) + -ARENA_WIDTH * 0.9 / 2;

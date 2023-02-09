@@ -47,7 +47,7 @@ export class PlayMatch extends Phaser.Scene {
 
     private clientTime!: number;
 
-    // private fpsText!: Phaser.GameObjects.Text;
+    private fpsText!: Phaser.GameObjects.Text;
 
     private entities: {eid: number, type: PrefabType}[] = [];
 
@@ -69,17 +69,21 @@ export class PlayMatch extends Phaser.Scene {
     async create(serverGameConfig: iServerGameConfig) {
         console.log('PlayMatch: create()');
 
-        // this.fpsText = this.add.text(
-        //     this.scale.width * 0.025,
-        //     this.scale.width * 0.025,
-        //     "Scene: PlayMatch\nFPS: 0",
-        //     {
-        //         fontFamily: 'arial',
-        //         fontSize: '20px',
-        //         color: '#ffffff'
-        //     }
-        // ).setOrigin(0, 0);
-        // this.fpsText.setScrollFactor(0);
+        this.fpsText = this.add.text(
+            this.scale.width * 0.025,
+            this.scale.width * 0.025,
+            "Scene: PlayMatch\nFPS: 0",
+            {
+                fontFamily: 'arial',
+                fontSize: '20px',
+                color: '#ffffff'
+            }
+        ).setOrigin(0, 0);
+        this.fpsText.setScrollFactor(0);
+
+        this.input.keyboard.on('keyup-F', () => {
+            this.fpsText.setVisible(!this.fpsText.visible);
+        });
 
         // Create ECS world
         this.world = createWorld();
@@ -215,7 +219,7 @@ export class PlayMatch extends Phaser.Scene {
         // update fps
         this.accum += dt;
         if (this.accum > 200) {
-            // this.fpsText.text = "Scene: PlayMatch\nFPS: " + (1000 / dt).toFixed(1);
+            this.fpsText.text = "Scene: PlayMatch\nFPS: " + (1000 / dt).toFixed(1);
             this.accum = 0;
         }
     }

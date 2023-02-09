@@ -103,8 +103,8 @@ export const createSnapshotInterpolationSystem = (server: GameServerHandler, ser
         const interps = interpQuery(world);
         interps.map(eid => {
             // find frames we're closest to
-            let prev = 0;
-            let curr = 1;
+            let prev = -1;
+            let curr = -1;
 
             // go through the buffer array
             const buff = buffer.get(eid);
@@ -113,6 +113,10 @@ export const createSnapshotInterpolationSystem = (server: GameServerHandler, ser
                     return val.timeStamp > clientTime;
                 });
                 prev = curr - 1;
+
+                if (prev === -1 || curr === -1) {
+                    console.log('OUCH');
+                }
 
                 if (buff[prev] && buff[curr]) {
                     let lerp = (clientTime - buff[prev].timeStamp) / (buff[curr].timeStamp - buff[prev].timeStamp);

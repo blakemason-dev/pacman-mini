@@ -42,6 +42,37 @@ export class ClientInputHandler {
         this.scene.input.keyboard.on('keyup-L', () => {
             this.server.room?.send(Message.ClientDash);
         });
+
+        // Arrow controls
+        this.scene.input.keyboard.on('keydown-UP', () => {
+            this.server.room?.send(Message.ClientMoveUpBegin);
+        });
+        this.scene.input.keyboard.on('keyup-UP', () => {
+            this.server.room?.send(Message.ClientMoveUpEnd);
+        });
+        this.scene.input.keyboard.on('keydown-DOWN', () => {
+            this.server.room?.send(Message.ClientMoveDownBegin);
+        });
+        this.scene.input.keyboard.on('keyup-DOWN', () => {
+            this.server.room?.send(Message.ClientMoveDownEnd);
+        });
+        this.scene.input.keyboard.on('keydown-LEFT', () => {
+            this.server.room?.send(Message.ClientMoveLeftBegin);
+        });
+        this.scene.input.keyboard.on('keyup-LEFT', () => {
+            this.server.room?.send(Message.ClientMoveLeftEnd);
+        });
+        this.scene.input.keyboard.on('keydown-RIGHT', () => {
+            this.server.room?.send(Message.ClientMoveRightBegin);
+        });
+        this.scene.input.keyboard.on('keyup-RIGHT', () => {
+            this.server.room?.send(Message.ClientMoveRightEnd);
+        });
+
+        // Dash
+        this.scene.input.keyboard.on('keyup-SPACE', () => {
+            this.server.room?.send(Message.ClientDash);
+        });
     }
 
     stopListening() {
@@ -72,6 +103,37 @@ export class ClientInputHandler {
 
         // Dash
         this.scene.input.keyboard.off('keyup-L', () => {
+            this.server.room?.send(Message.ClientDash);
+        });
+
+        // ARROW KEYS
+        this.scene.input.keyboard.off('keydown-UP', () => {
+            this.server.room?.send(Message.ClientMoveUpBegin);
+        });
+        this.scene.input.keyboard.off('keyup-UP', () => {
+            this.server.room?.send(Message.ClientMoveUpEnd);
+        });
+        this.scene.input.keyboard.off('keydown-DOWN', () => {
+            this.server.room?.send(Message.ClientMoveDownBegin);
+        });
+        this.scene.input.keyboard.off('keyup-DOWN', () => {
+            this.server.room?.send(Message.ClientMoveDownEnd);
+        });
+        this.scene.input.keyboard.off('keydown-LEFT', () => {
+            this.server.room?.send(Message.ClientMoveLeftBegin);
+        });
+        this.scene.input.keyboard.off('keyup-LEFT', () => {
+            this.server.room?.send(Message.ClientMoveLeftEnd);
+        });
+        this.scene.input.keyboard.off('keydown-RIGHT', () => {
+            this.server.room?.send(Message.ClientMoveRightBegin);
+        });
+        this.scene.input.keyboard.off('keyup-RIGHT', () => {
+            this.server.room?.send(Message.ClientMoveRightEnd);
+        });
+
+        // Dash
+        this.scene.input.keyboard.off('keyup-SPACE', () => {
             this.server.room?.send(Message.ClientDash);
         });
     }
